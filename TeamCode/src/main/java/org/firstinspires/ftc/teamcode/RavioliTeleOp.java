@@ -14,8 +14,10 @@ public class RavioliTeleOp extends OpMode {
     final double FAST_SPEED = 0.8;
     double speedConstant;
     boolean fineControl;
+    boolean intakeOn;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
+    ElapsedTime intakeButtonTime = null;
 
     @Override
     public void init() {
@@ -23,8 +25,10 @@ public class RavioliTeleOp extends OpMode {
         hardware.init(hardwareMap);
         speedConstant = FAST_SPEED;
         fineControl = false;
+        intakeOn = false;
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        intakeButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
@@ -42,7 +46,7 @@ public class RavioliTeleOp extends OpMode {
     }
 
     private void drive() {
-        //check for speed swap
+        //check for speed swap for normal mode
         if(gamepad1.square && speedSwapButtonTime.time() >= 500) {
             if(speedConstant == FAST_SPEED)
                 speedConstant = SLOW_SPEED;
@@ -51,12 +55,14 @@ public class RavioliTeleOp extends OpMode {
             speedSwapButtonTime.reset();
         }
         //check for fine control/normal mode swap
+        //fine control squares power to make the increase towards 1.0 be more gradual, increasing precision
+        //normal mode multiplies power by a speed constant, which the driver can change
         if(gamepad1.triangle && fineControlButtonTime.time() >= 500) {
             fineControl = !fineControl;
             fineControlButtonTime.reset();
         }
 
-        //get controller input
+        //get controller input from joysticks for normal and fine control modes
         double forward, strafe, turn;
         forward = gamepad1.right_stick_y;
         strafe = gamepad1.right_stick_x;
@@ -67,36 +73,6 @@ public class RavioliTeleOp extends OpMode {
         double rightBackPower = forward - turn + strafe;
         double leftFrontPower = forward + turn + strafe;
         double leftBackPower = forward + turn - strafe;
-
-
-        if (gamepad1.dpad_up )
-        {
-            leftFrontPower = .7;
-            rightBackPower = .7;
-            rightFrontPower = .7;
-            leftBackPower = .7;
-        }
-        else if (gamepad1.dpad_down)
-        {
-            leftFrontPower = -.7;
-            rightBackPower = -.7;
-            rightFrontPower = -.7;
-            leftBackPower = -.7;
-        }
-        else if (gamepad1.dpad_right)
-        {
-            leftFrontPower = .7;
-            rightBackPower = .7;
-            rightFrontPower = -.7;
-            leftBackPower = -.7;
-        }
-        else if (gamepad1.dpad_left)
-        {
-            leftFrontPower = -.7;
-            rightBackPower = -.7;
-            rightFrontPower = .7;
-            leftBackPower = .7;
-        }
 
         if(Math.abs(rightFrontPower) > 1 || Math.abs(rightBackPower) > 1 || Math.abs(leftFrontPower) > 1 || Math.abs(leftBackPower) > 1) {
             double max;
@@ -124,6 +100,32 @@ public class RavioliTeleOp extends OpMode {
             leftBackPower = leftBackPower * speedConstant;
         }
 
+        //check input from dpad, which sets maximum power in one direction, overrides fine control and normal modes
+        if (gamepad1.dpad_up ) {
+            rightFrontPower = 1.0;
+            rightBackPower = 1.0;
+            leftFrontPower = 1.0;
+            leftBackPower = 1.0;
+        }
+        else if (gamepad1.dpad_down) {
+            rightFrontPower = -1.0;
+            rightBackPower = -1.0;
+            leftFrontPower = -1.0;
+            leftBackPower = -1.0;
+        }
+        else if (gamepad1.dpad_right) {
+            rightFrontPower = -1.0;
+            rightBackPower = 1.0;
+            leftFrontPower = 1.0;
+            leftBackPower = -1.0;
+        }
+        else if (gamepad1.dpad_left) {
+            leftFrontPower = -1.0;
+            rightBackPower = -1.0;
+            rightFrontPower = 1.0;
+            leftBackPower = 1.0;
+        }
+
         //set drive motor power
         hardware.rightFront.setPower(rightFrontPower);
         hardware.rightBack.setPower(rightBackPower);
@@ -132,7 +134,10 @@ public class RavioliTeleOp extends OpMode {
     }
 
     private void intake() {
-
+        //check for intake on/off
+        if(gamepad2.square && intakeButtonTime.time() >= 500) {
+            intakeOn = !intakeOn;
+            intakeButtonTime.reset();
+        }
     }
 }
-

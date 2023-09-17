@@ -16,10 +16,7 @@ public class Hardware {
     public DcMotorEx rightBack;
     public DcMotorEx leftBack;
     public DcMotorEx[] driveMotors;
-
-    public Servo leftIntakeServo;
-    public Servo rightIntakeServo;
-    public DcMotorEx conveyorMotor;
+    public DcMotorEx intakeMotor;
 
     public void init(HardwareMap hardwareMap) {
         Assert.assertNotNull(hardwareMap);
@@ -48,20 +45,12 @@ public class Hardware {
     }
 
     public void initializeIntakeMotors(HardwareMap hardwareMap) {
-        //set up intake servos
-        rightIntakeServo = hardwareMap.get(Servo.class, HardwareIDs.RIGHT_INTAKE_SERVO);
-        leftIntakeServo = hardwareMap.get(Servo.class, HardwareIDs.LEFT_INTAKE_SERVO);
-
         //set up intake motors
-        conveyorMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.CONVEYOR_MOTOR);
+        intakeMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.INTAKE_MOTOR);
 
-        //set intake servo settings
-        rightIntakeServo.setPosition(0);
-        leftIntakeServo.setPosition(0);
-
-        //set intake motor
-        conveyorMotor.setPower(1);
-        conveyorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        conveyorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //set motors to desired settings
+        intakeMotor.setPower(0);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
