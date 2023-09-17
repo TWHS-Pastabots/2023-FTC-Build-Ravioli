@@ -43,6 +43,7 @@ public class RavioliTeleOp extends OpMode {
     public void loop() {
         drive();
         intake();
+        launch();
     }
 
     private void drive() {
@@ -54,6 +55,7 @@ public class RavioliTeleOp extends OpMode {
                 speedConstant = FAST_SPEED;
             speedSwapButtonTime.reset();
         }
+
         //check for fine control/normal mode swap
         //fine control squares power to make the increase towards 1.0 be more gradual, increasing precision
         //normal mode multiplies power by a speed constant, which the driver can change
@@ -88,10 +90,10 @@ public class RavioliTeleOp extends OpMode {
 
         //adjust power based on mode
         if(fineControl) {
-            rightFrontPower = Math.pow(rightFrontPower, 2);
-            rightBackPower = Math.pow(rightBackPower, 2);
-            leftFrontPower = Math.pow(leftFrontPower, 2);
-            leftBackPower = Math.pow(leftBackPower, 2);
+            rightFrontPower = Math.pow(rightFrontPower, 2) * Math.signum(rightFrontPower);
+            rightBackPower = Math.pow(rightBackPower, 2) * Math.signum(rightBackPower);
+            leftFrontPower = Math.pow(leftFrontPower, 2) * Math.signum(leftFrontPower);
+            leftBackPower = Math.pow(leftBackPower, 2) * Math.signum(leftBackPower);
         }
         else {
             rightFrontPower = rightFrontPower * speedConstant;
@@ -138,6 +140,18 @@ public class RavioliTeleOp extends OpMode {
         if(gamepad2.square && intakeButtonTime.time() >= 500) {
             intakeOn = !intakeOn;
             intakeButtonTime.reset();
+        }
+    }
+
+    private void launch() {
+        //check for launch
+        if(gamepad2.right_trigger > 0.5) {
+            hardware.flywheel1Motor.setPower(1.0);
+            hardware.flywheel2Motor.setPower(1.0);
+        }
+        else {
+            hardware.flywheel1Motor.setPower(0.0);
+            hardware.flywheel2Motor.setPower(0.0);
         }
     }
 }
