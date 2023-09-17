@@ -146,12 +146,12 @@ public class RavioliTeleOp extends OpMode {
     private void launch() {
         //check for launch
         if(gamepad2.right_trigger > 0.5) {
-            hardware.flywheel1Motor.setPower(1.0);
-            hardware.flywheel2Motor.setPower(1.0);
+            hardware.flywheelMotorOne.setPower(1.0);
+            hardware.flywheelMotorTwo.setPower(1.0);
         }
         else {
-            hardware.flywheel1Motor.setPower(0.0);
-            hardware.flywheel2Motor.setPower(0.0);
+            hardware.flywheelMotorOne.setPower(0.0);
+            hardware.flywheelMotorTwo.setPower(0.0);
         }
     }
 }

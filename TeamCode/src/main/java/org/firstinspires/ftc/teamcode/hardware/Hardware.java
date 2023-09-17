@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 
 public class Hardware {
@@ -14,14 +16,17 @@ public class Hardware {
     public DcMotorEx leftBack;
     public DcMotorEx[] driveMotors;
     public DcMotorEx intakeMotor;
-    public DcMotorEx flywheel1Motor;
-    public DcMotorEx flywheel2Motor;
+    public DcMotorEx flywheelMotorOne;
+    public DcMotorEx flywheelMotorTwo;
+    public Servo scaffoldServoOne;
+    public Servo scaffoldServoTwo;
 
     public void init(HardwareMap hardwareMap) {
         Assert.assertNotNull(hardwareMap);
         initializeDriveMotors(hardwareMap);
         initializeIntakeMotors(hardwareMap);
-        initializeLauncherMotors(hardwareMap);
+        initializeFlywheelMotors(hardwareMap);
+        initializeScaffoldServos(hardwareMap);
     }
 
     private void initializeDriveMotors(HardwareMap hardwareMap) {
@@ -54,18 +59,24 @@ public class Hardware {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void initializeLauncherMotors(HardwareMap hardwareMap) {
+    private void initializeFlywheelMotors(HardwareMap hardwareMap) {
         //set up launcher motors
-        flywheel1Motor = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_1_MOTOR);
-        flywheel2Motor = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_2_MOTOR);
+        flywheelMotorOne = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_1_MOTOR);
+        flywheelMotorTwo = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_2_MOTOR);
 
         //set motors to desired settings
-        flywheel1Motor.setPower(0.0);
-        flywheel1Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel1Motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flywheelMotorOne.setPower(0.0);
+        flywheelMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheelMotorOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        flywheel2Motor.setPower(0.0);
-        flywheel2Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel2Motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flywheelMotorTwo.setPower(0.0);
+        flywheelMotorTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheelMotorTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    private void initializeScaffoldServos(HardwareMap hardwareMap) {
+        //set up scaffold servos
+        scaffoldServoOne = hardwareMap.get(Servo.class, HardwareIDs.SCAFFOLD_SERVO_ONE);
+        scaffoldServoTwo = hardwareMap.get(Servo.class, HardwareIDs.SCAFFOLD_SERVO_TWO);
     }
 }
