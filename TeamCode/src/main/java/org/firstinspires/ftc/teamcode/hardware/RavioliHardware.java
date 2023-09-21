@@ -81,5 +81,9 @@ public class RavioliHardware {
         //set up scaffold servos
         scaffoldServoOne = hardwareMap.get(Servo.class, HardwareIDs.SCAFFOLD_SERVO_ONE);
         scaffoldServoTwo = hardwareMap.get(Servo.class, HardwareIDs.SCAFFOLD_SERVO_TWO);
+
+        //set servos to desired settings
+        scaffoldServoOne.setPosition(0.0);
+        scaffoldServoTwo.setPosition(0.0);
     }
 }

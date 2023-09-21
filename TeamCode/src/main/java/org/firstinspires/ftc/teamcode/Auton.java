@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Autonomous")
+@Autonomous(name = "Ravioli Autonomous")
 public class Auton extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

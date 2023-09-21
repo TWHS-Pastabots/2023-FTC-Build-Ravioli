@@ -18,6 +18,9 @@ public class RavioliTeleOp extends OpMode {
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
     ElapsedTime intakeButtonTime = null;
+    ElapsedTime servoPos1ButtonTime = null;
+    ElapsedTime servoPos2ButtonTime = null;
+    ElapsedTime servoPos3ButtonTime = null;
 
     @Override
     public void init() {
@@ -29,6 +32,9 @@ public class RavioliTeleOp extends OpMode {
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         intakeButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        servoPos1ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
@@ -148,6 +154,23 @@ public class RavioliTeleOp extends OpMode {
         if(gamepad2.square && intakeButtonTime.time() >= 500) {
             intakeOn = !intakeOn;
             intakeButtonTime.reset();
+        }
+
+        //check for servo position changes
+        if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
+            hardware.scaffoldServoOne.setPosition(1.0);
+            hardware.scaffoldServoTwo.setPosition(1.0);
+            servoPos1ButtonTime.reset();
+        }
+        else if(gamepad2.cross && servoPos2ButtonTime.time() >= 500) {
+            hardware.scaffoldServoOne.setPosition(2.0);
+            hardware.scaffoldServoTwo.setPosition(2.0);
+            servoPos2ButtonTime.reset();
+        }
+        else if(gamepad2.circle && servoPos3ButtonTime.time() >= 500) {
+            hardware.scaffoldServoOne.setPosition(3.0);
+            hardware.scaffoldServoTwo.setPosition(3.0);
+            servoPos3ButtonTime.reset();
         }
     }
 
