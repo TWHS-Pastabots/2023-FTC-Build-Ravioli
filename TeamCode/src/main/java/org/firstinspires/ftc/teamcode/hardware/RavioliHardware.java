@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 
-public class Hardware {
+public class RavioliHardware {
 
     public DcMotorEx rightFront;
     public DcMotorEx leftFront;
@@ -20,6 +20,9 @@ public class Hardware {
     public DcMotorEx flywheelMotorTwo;
     public Servo scaffoldServoOne;
     public Servo scaffoldServoTwo;
+
+    public RavioliHardware() {
+    }
 
     public void init(HardwareMap hardwareMap) {
         Assert.assertNotNull(hardwareMap);

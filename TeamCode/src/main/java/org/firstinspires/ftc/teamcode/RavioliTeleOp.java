@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 
 @TeleOp(name = "Ravioli TeleOp")
 public class RavioliTeleOp extends OpMode {
 
-    Hardware hardware;
+    RavioliHardware hardware;
     final double SLOW_SPEED = 0.5;
     final double FAST_SPEED = 0.8;
     double speedConstant;
@@ -21,7 +21,7 @@ public class RavioliTeleOp extends OpMode {
 
     @Override
     public void init() {
-        hardware = new Hardware();
+        hardware = new RavioliHardware();
         hardware.init(hardwareMap);
         speedConstant = FAST_SPEED;
         fineControl = false;
