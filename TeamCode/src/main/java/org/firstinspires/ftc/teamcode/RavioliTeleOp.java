@@ -36,11 +36,13 @@ public class RavioliTeleOp extends OpMode {
     @Override
     public void start() {
         telemetry.addData("Status:: ", "Started");
+        telemetry.addData("Current Drive Mode:: ", "Fast");
         telemetry.update();
     }
 
     @Override
     public void loop() {
+        telemetry.addData("Status:: ", "Started");
         drive();
         intake();
         launch();
@@ -66,9 +68,9 @@ public class RavioliTeleOp extends OpMode {
 
         //get controller input from joysticks for normal and fine control modes
         double forward, strafe, turn;
-        forward = gamepad1.right_stick_y;
-        strafe = gamepad1.right_stick_x;
-        turn = gamepad1.left_stick_x;
+        forward = -gamepad1.left_stick_y;
+        strafe = -gamepad1.left_stick_x;
+        turn = -gamepad1.right_stick_x;
 
         //calculate initial powers
         double rightFrontPower = forward - turn - strafe;
@@ -94,13 +96,19 @@ public class RavioliTeleOp extends OpMode {
             rightBackPower = Math.pow(rightBackPower, 2) * Math.signum(rightBackPower);
             leftFrontPower = Math.pow(leftFrontPower, 2) * Math.signum(leftFrontPower);
             leftBackPower = Math.pow(leftBackPower, 2) * Math.signum(leftBackPower);
+            telemetry.addData("Current Drive Mode:: ", "Fine Control");
         }
         else {
             rightFrontPower = rightFrontPower * speedConstant;
             rightBackPower = rightBackPower * speedConstant;
             leftFrontPower = leftFrontPower * speedConstant;
             leftBackPower = leftBackPower * speedConstant;
+            if(speedConstant == FAST_SPEED)
+                telemetry.addData("Current Drive Mode:: ", "Fast");
+            else if (speedConstant == SLOW_SPEED)
+                telemetry.addData("Current Drive Mode:: ", "Slow");
         }
+        telemetry.update();
 
         //check input from dpad, which sets maximum power in one direction, overrides fine control and normal modes
         if (gamepad1.dpad_up ) {
