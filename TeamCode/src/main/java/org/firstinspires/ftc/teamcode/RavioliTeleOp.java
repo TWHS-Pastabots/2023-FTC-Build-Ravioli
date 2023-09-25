@@ -10,9 +10,10 @@ import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 public class RavioliTeleOp extends OpMode {
 
     RavioliHardware hardware;
-    final double SLOW_SPEED = 0.5;
-    final double FAST_SPEED = 0.8;
+    final double SLOW_SPEED = 0.3;
+    final double FAST_SPEED = 1.0;
     double speedConstant;
+    boolean fastMode;
     boolean fineControl;
     boolean intakeOn;
     ElapsedTime speedSwapButtonTime = null;
@@ -26,7 +27,7 @@ public class RavioliTeleOp extends OpMode {
     public void init() {
         hardware = new RavioliHardware();
         hardware.init(hardwareMap);
-        speedConstant = FAST_SPEED;
+        fastMode = true;
         fineControl = false;
         intakeOn = false;
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -56,18 +57,15 @@ public class RavioliTeleOp extends OpMode {
 
     private void drive() {
         //check for speed swap for normal mode
-        if(gamepad1.square && speedSwapButtonTime.time() >= 500) {
-            if(speedConstant == FAST_SPEED)
-                speedConstant = SLOW_SPEED;
-            if(speedConstant == SLOW_SPEED)
-                speedConstant = FAST_SPEED;
+        if(gamepad1.square && speedSwapButtonTime.time() >= 200) {
+            fastMode = !fastMode;
             speedSwapButtonTime.reset();
         }
 
         //check for fine control/normal mode swap
-        //fine control squares power to make the increase towards 1.0 be more gradual, increasing precision
+        //fine control raises power to the power of 5to make the increase towards 1.0 be more gradual, increasing precision
         //normal mode multiplies power by a speed constant, which the driver can change
-        if(gamepad1.triangle && fineControlButtonTime.time() >= 500) {
+        if(gamepad1.triangle && fineControlButtonTime.time() >= 200) {
             fineControl = !fineControl;
             fineControlButtonTime.reset();
         }
@@ -98,21 +96,25 @@ public class RavioliTeleOp extends OpMode {
 
         //adjust power based on mode
         if(fineControl) {
-            rightFrontPower = Math.pow(rightFrontPower, 2) * Math.signum(rightFrontPower);
-            rightBackPower = Math.pow(rightBackPower, 2) * Math.signum(rightBackPower);
-            leftFrontPower = Math.pow(leftFrontPower, 2) * Math.signum(leftFrontPower);
-            leftBackPower = Math.pow(leftBackPower, 2) * Math.signum(leftBackPower);
+            rightFrontPower = Math.pow(rightFrontPower, 5);
+            rightBackPower = Math.pow(rightBackPower, 5);
+            leftFrontPower = Math.pow(leftFrontPower, 5);
+            leftBackPower = Math.pow(leftBackPower, 5);
             telemetry.addData("Current Drive Mode:: ", "Fine Control");
         }
         else {
+            if (fastMode) {
+                speedConstant = FAST_SPEED;
+                telemetry.addData("Current Drive Mode:: ", "Fast");
+            }
+            else {
+                speedConstant = SLOW_SPEED;
+                telemetry.addData("Current Drive Mode:: ", "Slow");
+            }
             rightFrontPower = rightFrontPower * speedConstant;
             rightBackPower = rightBackPower * speedConstant;
             leftFrontPower = leftFrontPower * speedConstant;
             leftBackPower = leftBackPower * speedConstant;
-            if(speedConstant == FAST_SPEED)
-                telemetry.addData("Current Drive Mode:: ", "Fast");
-            else if (speedConstant == SLOW_SPEED)
-                telemetry.addData("Current Drive Mode:: ", "Slow");
         }
         telemetry.update();
 
