@@ -37,8 +37,10 @@ public class RavioliTeleOp extends OpMode {
         fastMode = true;
         fineControl = false;
         armScoring = false;
+        intakeOn = false;
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        intakeButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos1ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
