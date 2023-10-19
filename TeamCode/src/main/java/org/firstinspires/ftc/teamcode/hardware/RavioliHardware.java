@@ -16,6 +16,7 @@ public class RavioliHardware {
     public DcMotorEx leftBack;
     public DcMotorEx[] driveMotors;
     public DcMotorEx intakeMotor;
+    public DcMotorEx intakeRampMotor;
     public DcMotorEx flywheelMotorOne;
     public DcMotorEx flywheelMotorTwo;
     public Servo scaffoldServoOne;
@@ -53,13 +54,18 @@ public class RavioliHardware {
     }
 
     private void initializeIntakeMotors(HardwareMap hardwareMap) {
-        //set up intake motor
+        //set up intake motors
         intakeMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.INTAKE_MOTOR);
+        intakeRampMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.INTAKE_MOTOR);
 
-        //set motor to desired settings
+        //set motors to desired settings
         intakeMotor.setPower(0.0);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        intakeRampMotor.setPower(0.0);
+        intakeRampMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        intakeRampMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private void initializeFlywheelMotors(HardwareMap hardwareMap) {

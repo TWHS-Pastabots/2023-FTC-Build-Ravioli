@@ -10,15 +10,16 @@ import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 public class RavioliTeleOp extends OpMode {
 
     RavioliHardware hardware;
-    final double SLOW_SPEED = 0.3;
-    final double FAST_SPEED = 1.0;
+    static final double SLOW_SPEED = 0.3;
+    static final double FAST_SPEED = 1.0;
+    static final double LOW_LAUNCH_POS = 0.0;
+    static final double MIDDLE_LAUNCH_POS = 0.5;
+    static final double HIGH_LAUNCH_POS = 1.0;
     double speedConstant;
     boolean fastMode;
     boolean fineControl;
-    boolean intakeOn;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
-    ElapsedTime intakeButtonTime = null;
     ElapsedTime servoPos1ButtonTime = null;
     ElapsedTime servoPos2ButtonTime = null;
     ElapsedTime servoPos3ButtonTime = null;
@@ -29,10 +30,8 @@ public class RavioliTeleOp extends OpMode {
         hardware.init(hardwareMap);
         fastMode = true;
         fineControl = false;
-        intakeOn = false;
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        intakeButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos1ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -53,6 +52,7 @@ public class RavioliTeleOp extends OpMode {
         drive();
         intake();
         launch();
+        telemetry.update();
     }
 
     private void drive() {
@@ -96,10 +96,10 @@ public class RavioliTeleOp extends OpMode {
 
         //adjust power based on mode
         if(fineControl) {
-            rightFrontPower = Math.pow(rightFrontPower, 5);
-            rightBackPower = Math.pow(rightBackPower, 5);
-            leftFrontPower = Math.pow(leftFrontPower, 5);
-            leftBackPower = Math.pow(leftBackPower, 5);
+            rightFrontPower = Math.pow(rightFrontPower, 7);
+            rightBackPower = Math.pow(rightBackPower, 7);
+            leftFrontPower = Math.pow(leftFrontPower, 7);
+            leftBackPower = Math.pow(leftBackPower, 7);
             telemetry.addData("Current Drive Mode:: ", "Fine Control");
         }
         else {
@@ -116,7 +116,6 @@ public class RavioliTeleOp extends OpMode {
             leftFrontPower = leftFrontPower * speedConstant;
             leftBackPower = leftBackPower * speedConstant;
         }
-        telemetry.update();
 
         //check input from dpad, which sets maximum power in one direction, overrides fine control and normal modes
         if (gamepad1.dpad_up ) {
@@ -153,26 +152,32 @@ public class RavioliTeleOp extends OpMode {
 
     private void intake() {
         //check for intake on/off
-        if(gamepad2.square && intakeButtonTime.time() >= 500) {
-            intakeOn = !intakeOn;
-            intakeButtonTime.reset();
+        if(gamepad2.square) {
+            hardware.intakeMotor.setPower(1.0);
+            hardware.intakeRampMotor.setPower(1.0);
+            telemetry.addData("Intake Status:: ", "On");
         }
+        else
+            telemetry.addData("Intake Status:: ", "Of");
 
         //check for servo position changes
         if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(1.0);
-            hardware.scaffoldServoTwo.setPosition(1.0);
+            hardware.scaffoldServoOne.setPosition(LOW_LAUNCH_POS);
+            hardware.scaffoldServoTwo.setPosition(LOW_LAUNCH_POS);
             servoPos1ButtonTime.reset();
+            telemetry.addData("Launch Position:: ", "LOW");
         }
         else if(gamepad2.cross && servoPos2ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(2.0);
-            hardware.scaffoldServoTwo.setPosition(2.0);
+            hardware.scaffoldServoOne.setPosition(MIDDLE_LAUNCH_POS);
+            hardware.scaffoldServoTwo.setPosition(MIDDLE_LAUNCH_POS);
             servoPos2ButtonTime.reset();
+            telemetry.addData("Launch Position:: ", "MIDDLE");
         }
         else if(gamepad2.circle && servoPos3ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(3.0);
-            hardware.scaffoldServoTwo.setPosition(3.0);
+            hardware.scaffoldServoOne.setPosition(HIGH_LAUNCH_POS);
+            hardware.scaffoldServoTwo.setPosition(HIGH_LAUNCH_POS);
             servoPos3ButtonTime.reset();
+            telemetry.addData("Launch Position:: ", "HIGH");
         }
     }
 
@@ -181,10 +186,12 @@ public class RavioliTeleOp extends OpMode {
         if(gamepad2.right_trigger > 0.5) {
             hardware.flywheelMotorOne.setPower(1.0);
             hardware.flywheelMotorTwo.setPower(1.0);
+            telemetry.addData("Flywheels:: ", "Spinning");
         }
         else {
             hardware.flywheelMotorOne.setPower(0.0);
             hardware.flywheelMotorTwo.setPower(0.0);
+            telemetry.addData("Flywheels:: ", "Stopped");
         }
     }
 }
