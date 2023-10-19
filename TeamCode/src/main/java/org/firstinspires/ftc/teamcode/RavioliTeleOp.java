@@ -21,8 +21,10 @@ public class RavioliTeleOp extends OpMode {
     boolean fastMode;
     boolean fineControl;
     boolean armScoring;
+    boolean intakeOn;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
+    ElapsedTime intakeButtonTime = null;
     ElapsedTime servoPos1ButtonTime = null;
     ElapsedTime servoPos2ButtonTime = null;
     ElapsedTime servoPos3ButtonTime = null;
@@ -159,13 +161,17 @@ public class RavioliTeleOp extends OpMode {
 
     private void intake() {
         //check for intake on/off
-        if(gamepad2.square) {
-            hardware.intakeMotor.setPower(1.0);
-            hardware.intakeRampMotor.setPower(1.0);
+        if (gamepad2.square && intakeButtonTime.time() >= 500)
+            intakeOn = !intakeOn;
+        if (intakeOn) {
+            hardware.intakeMotor.setPower(-1.0);
+            hardware.intakeRampMotor.setPower(-1.0);
             telemetry.addData("Intake Status:: ", "On");
-        }
-        else
+        } else {
+            hardware.intakeMotor.setPower(0.0);
+            hardware.intakeRampMotor.setPower(0.0);
             telemetry.addData("Intake Status:: ", "Off");
+        }
 
         //check for servo position changes
         if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
