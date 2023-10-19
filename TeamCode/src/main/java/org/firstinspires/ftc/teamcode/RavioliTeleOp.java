@@ -163,11 +163,13 @@ public class RavioliTeleOp extends OpMode {
 
     private void intake() {
         //check for intake on/off
-        if (gamepad2.square && intakeButtonTime.time() >= 500)
+        if (gamepad2.square && intakeButtonTime.time() >= 500) {
             intakeOn = !intakeOn;
+            intakeButtonTime.reset();
+        }
         if (intakeOn) {
-            hardware.intakeMotor.setPower(-1.0);
-            hardware.intakeRampMotor.setPower(-1.0);
+            hardware.intakeMotor.setPower(1.0);
+            hardware.intakeRampMotor.setPower(1.0);
             telemetry.addData("Intake Status:: ", "On");
         } else {
             hardware.intakeMotor.setPower(0.0);
