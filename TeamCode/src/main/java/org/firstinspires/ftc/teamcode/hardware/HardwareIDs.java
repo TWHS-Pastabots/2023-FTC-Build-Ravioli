@@ -11,4 +11,7 @@ public class HardwareIDs {
     public static final String FLYWHEEL_2_MOTOR = "flywheel2Motor";
     public static final String SCAFFOLD_SERVO_ONE = "scaffoldServoOne";
     public static final String SCAFFOLD_SERVO_TWO = "scaffoldServoTwo";
+    public static final String ARM_SERVO_1 = "armServo1";
+    public static final String ARM_SERVO_2 = "armServo2";
+    public static final String CLAW_SERVO = "clawServo";
 }

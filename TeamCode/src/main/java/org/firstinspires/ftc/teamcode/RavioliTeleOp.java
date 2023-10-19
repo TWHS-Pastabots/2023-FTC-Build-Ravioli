@@ -12,17 +12,21 @@ public class RavioliTeleOp extends OpMode {
     RavioliHardware hardware;
     static final double SLOW_SPEED = 0.3;
     static final double FAST_SPEED = 1.0;
-    static final double LOW_LAUNCH_POS = 0.0;
-    static final double MIDDLE_LAUNCH_POS = 0.5;
-    static final double HIGH_LAUNCH_POS = 1.0;
+    static final double LOW_LAUNCH_POSITION = 0.0;
+    static final double MIDDLE_LAUNCH_POSITION = 0.5;
+    static final double HIGH_LAUNCH_POSITION = 1.0;
+    static final double ARM_SCORE_POSITION = 1.0;
+    static final double ARM_REST_POSITION = 0.0;
     double speedConstant;
     boolean fastMode;
     boolean fineControl;
+    boolean armScoring;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
     ElapsedTime servoPos1ButtonTime = null;
     ElapsedTime servoPos2ButtonTime = null;
     ElapsedTime servoPos3ButtonTime = null;
+    ElapsedTime armPosButtonTime = null;
 
     @Override
     public void init() {
@@ -30,11 +34,13 @@ public class RavioliTeleOp extends OpMode {
         hardware.init(hardwareMap);
         fastMode = true;
         fineControl = false;
+        armScoring = false;
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos1ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        armPosButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
@@ -52,6 +58,7 @@ public class RavioliTeleOp extends OpMode {
         drive();
         intake();
         launch();
+        moveArm();
         telemetry.update();
     }
 
@@ -158,26 +165,41 @@ public class RavioliTeleOp extends OpMode {
             telemetry.addData("Intake Status:: ", "On");
         }
         else
-            telemetry.addData("Intake Status:: ", "Of");
+            telemetry.addData("Intake Status:: ", "Off");
 
         //check for servo position changes
         if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(LOW_LAUNCH_POS);
-            hardware.scaffoldServoTwo.setPosition(LOW_LAUNCH_POS);
+            hardware.scaffoldServoOne.setPosition(LOW_LAUNCH_POSITION);
+            hardware.scaffoldServoTwo.setPosition(LOW_LAUNCH_POSITION);
             servoPos1ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "LOW");
         }
         else if(gamepad2.cross && servoPos2ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(MIDDLE_LAUNCH_POS);
-            hardware.scaffoldServoTwo.setPosition(MIDDLE_LAUNCH_POS);
+            hardware.scaffoldServoOne.setPosition(MIDDLE_LAUNCH_POSITION);
+            hardware.scaffoldServoTwo.setPosition(MIDDLE_LAUNCH_POSITION);
             servoPos2ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "MIDDLE");
         }
         else if(gamepad2.circle && servoPos3ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(HIGH_LAUNCH_POS);
-            hardware.scaffoldServoTwo.setPosition(HIGH_LAUNCH_POS);
+            hardware.scaffoldServoOne.setPosition(HIGH_LAUNCH_POSITION);
+            hardware.scaffoldServoTwo.setPosition(HIGH_LAUNCH_POSITION);
             servoPos3ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "HIGH");
+        }
+    }
+
+    private void moveArm() {
+        //check for position change
+        if(gamepad2.right_bumper && armPosButtonTime.time() >= 500)
+            armScoring = !armScoring;
+
+        if(armScoring) {
+            hardware.armServoOne.setPosition(ARM_SCORE_POSITION);
+            hardware.armServoTwo.setPosition(ARM_SCORE_POSITION);
+        }
+        else {
+            hardware.armServoTwo.setPosition(ARM_REST_POSITION);
+            hardware.armServoTwo.setPosition(ARM_REST_POSITION);
         }
     }
 
