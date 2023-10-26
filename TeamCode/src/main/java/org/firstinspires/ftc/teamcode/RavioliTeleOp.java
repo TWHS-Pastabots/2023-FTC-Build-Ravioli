@@ -21,10 +21,8 @@ public class RavioliTeleOp extends OpMode {
     boolean fastMode;
     boolean fineControl;
     boolean armScoring;
-    boolean intakeOn;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
-    ElapsedTime intakeButtonTime = null;
     ElapsedTime servoPos1ButtonTime = null;
     ElapsedTime servoPos2ButtonTime = null;
     ElapsedTime servoPos3ButtonTime = null;
@@ -37,10 +35,8 @@ public class RavioliTeleOp extends OpMode {
         fastMode = true;
         fineControl = false;
         armScoring = false;
-        intakeOn = false;
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        intakeButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos1ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -163,11 +159,7 @@ public class RavioliTeleOp extends OpMode {
 
     private void intake() {
         //check for intake on/off
-        if (gamepad2.square && intakeButtonTime.time() >= 500) {
-            intakeOn = !intakeOn;
-            intakeButtonTime.reset();
-        }
-        if (intakeOn) {
+        if (gamepad2.square) {
             hardware.intakeMotor.setPower(1.0);
             hardware.intakeRampMotor.setPower(1.0);
             telemetry.addData("Intake Status:: ", "On");
@@ -179,20 +171,20 @@ public class RavioliTeleOp extends OpMode {
 
         //check for servo position changes
         if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(LOW_LAUNCH_POSITION);
-            hardware.scaffoldServoTwo.setPosition(LOW_LAUNCH_POSITION);
+            hardware.flywheelServoOne.setPosition(LOW_LAUNCH_POSITION);
+            hardware.flywheelServoTwo.setPosition(LOW_LAUNCH_POSITION);
             servoPos1ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "LOW");
         }
         else if(gamepad2.cross && servoPos2ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(MIDDLE_LAUNCH_POSITION);
-            hardware.scaffoldServoTwo.setPosition(MIDDLE_LAUNCH_POSITION);
+            hardware.flywheelServoOne.setPosition(MIDDLE_LAUNCH_POSITION);
+            hardware.flywheelServoTwo.setPosition(MIDDLE_LAUNCH_POSITION);
             servoPos2ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "MIDDLE");
         }
         else if(gamepad2.circle && servoPos3ButtonTime.time() >= 500) {
-            hardware.scaffoldServoOne.setPosition(HIGH_LAUNCH_POSITION);
-            hardware.scaffoldServoTwo.setPosition(HIGH_LAUNCH_POSITION);
+            hardware.flywheelServoOne.setPosition(HIGH_LAUNCH_POSITION);
+            hardware.flywheelServoTwo.setPosition(HIGH_LAUNCH_POSITION);
             servoPos3ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "HIGH");
         }
@@ -203,14 +195,10 @@ public class RavioliTeleOp extends OpMode {
         if(gamepad2.right_bumper && armPosButtonTime.time() >= 500)
             armScoring = !armScoring;
 
-        if(armScoring) {
+        if(armScoring)
             hardware.armServoOne.setPosition(ARM_SCORE_POSITION);
-            hardware.armServoTwo.setPosition(ARM_SCORE_POSITION);
-        }
-        else {
-            hardware.armServoTwo.setPosition(ARM_REST_POSITION);
-            hardware.armServoTwo.setPosition(ARM_REST_POSITION);
-        }
+        else
+            hardware.armServoOne.setPosition(ARM_REST_POSITION);
     }
 
     private void launch() {
