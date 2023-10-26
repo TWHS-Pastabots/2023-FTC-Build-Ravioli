@@ -151,8 +151,9 @@ public class RavioliTeleOp extends OpMode {
         }
 
         //set drive motor power
-        hardware.rightFront.setPower(rightFrontPower);
-        hardware.rightBack.setPower(rightBackPower);
+        //test drift fix? pls work
+        hardware.rightFront.setPower(rightFrontPower * 0.8);
+        hardware.rightBack.setPower(rightBackPower * 0.8);
         hardware.leftFront.setPower(leftFrontPower);
         hardware.leftBack.setPower(leftBackPower);
     }
@@ -173,18 +174,21 @@ public class RavioliTeleOp extends OpMode {
         if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
             hardware.flywheelServoOne.setPosition(LOW_LAUNCH_POSITION);
             hardware.flywheelServoTwo.setPosition(LOW_LAUNCH_POSITION);
+            hardware.launcherServo.setPosition(LOW_LAUNCH_POSITION);
             servoPos1ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "LOW");
         }
         else if(gamepad2.cross && servoPos2ButtonTime.time() >= 500) {
             hardware.flywheelServoOne.setPosition(MIDDLE_LAUNCH_POSITION);
             hardware.flywheelServoTwo.setPosition(MIDDLE_LAUNCH_POSITION);
+            hardware.launcherServo.setPosition(MIDDLE_LAUNCH_POSITION);
             servoPos2ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "MIDDLE");
         }
         else if(gamepad2.circle && servoPos3ButtonTime.time() >= 500) {
             hardware.flywheelServoOne.setPosition(HIGH_LAUNCH_POSITION);
             hardware.flywheelServoTwo.setPosition(HIGH_LAUNCH_POSITION);
+            hardware.launcherServo.setPosition(HIGH_LAUNCH_POSITION);
             servoPos3ButtonTime.reset();
             telemetry.addData("Launch Position:: ", "HIGH");
         }
