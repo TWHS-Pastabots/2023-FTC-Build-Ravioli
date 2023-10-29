@@ -50,9 +50,9 @@ public class RavioliHardware {
         //set motors to desired settings
         driveMotors = new DcMotorEx[] {rightFront, rightBack, leftFront, leftBack};
         for(DcMotorEx motor: driveMotors){
-            motor.setPower(0.0);
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setPower(0.0);
         }
     }
 
@@ -61,9 +61,9 @@ public class RavioliHardware {
         intakeMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.INTAKE_MOTOR);
 
         //set motor to desired settings
-        intakeMotor.setPower(0.0);
-        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setPower(0.0);
     }
 
     private void initializeFlywheels(HardwareMap hardwareMap) {
@@ -72,13 +72,13 @@ public class RavioliHardware {
         flywheelMotorTwo = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_MOTOR_2);
 
         //set motors to desired settings
-        flywheelMotorOne.setPower(0.0);
-        flywheelMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheelMotorOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flywheelMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheelMotorOne.setPower(0.0);
 
-        flywheelMotorTwo.setPower(0.0);
-        flywheelMotorTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheelMotorTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flywheelMotorTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheelMotorTwo.setPower(0.0);
     }
 
     private void initializeScaffold(HardwareMap hardwareMap) {
@@ -86,7 +86,9 @@ public class RavioliHardware {
         launcherMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.LAUNCHER_MOTOR);
 
         //set motor to desired settings
-
+        launcherMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        launcherMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launcherMotor.setPower(0.0);
 
         //set up scaffold servos
         launcherServo = hardwareMap.get(Servo.class, HardwareIDs.LAUNCHER_SERVO);

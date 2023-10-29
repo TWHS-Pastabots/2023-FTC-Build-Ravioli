@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
@@ -13,15 +14,20 @@ public class RavioliTeleOp extends OpMode {
     static final double DRIFT_CONSTANT = 0.8;
     static final double SLOW_SPEED = 0.3;
     static final double FAST_SPEED = 1.0;
+    static final int INITIAL_POS_SHIFT = -80;
+    static final int HIGH_LAUNCH_POS = 60;
+    static final int LOW_LAUNCH_POS = 0;
     double speedConstant;
     double armServo1Pos;
     double armServo2Pos;
     boolean clawGrab;
     boolean fastMode;
     boolean fineControl;
+    boolean highLaunch;
     ElapsedTime clawGrabButtonTime = null;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
+    ElapsedTime launchHeightButtonTime = null;
 
     @Override
     public void init() {
@@ -30,6 +36,7 @@ public class RavioliTeleOp extends OpMode {
         fastMode = true;
         fineControl = false;
         clawGrab = false;
+        highLaunch = false;
         armServo1Pos = hardware.armServoOne.getPosition();
         armServo2Pos = hardware.armServoTwo.getPosition();
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -41,6 +48,14 @@ public class RavioliTeleOp extends OpMode {
 
     @Override
     public void start() {
+        //move launcher scaffold down
+        hardware.launcherMotor.setTargetPosition(INITIAL_POS_SHIFT);
+        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.launcherMotor.setTargetPositionTolerance(3);
+        hardware.launcherMotor.setPower(0.5);
+        hardware.launcherMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //telemetry updates
         telemetry.addData("Status:: ", "Started");
         telemetry.addData("Current Drive Mode:: ", "Fast");
         telemetry.update();
@@ -198,6 +213,26 @@ public class RavioliTeleOp extends OpMode {
     }
 
     private void launch() {
+        //check for scaffold height change
+        if(gamepad2.triangle && launchHeightButtonTime.time() >= 500) {
+            highLaunch = !highLaunch;
+            launchHeightButtonTime.reset();
+        }
+
+        //move scaffold
+        if(highLaunch) {
+            hardware.launcherMotor.setTargetPosition(HIGH_LAUNCH_POS);
+            telemetry.addData("Launcher Pos:: ", "High");
+        }
+        else {
+            hardware.launcherMotor.setTargetPosition(LOW_LAUNCH_POS);
+            telemetry.addData("Launcher Pos:: ", "Low");
+        }
+
+        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.launcherMotor.setPower(0.5);
+
+
         //check for flywheel spin-up
         if(gamepad2.right_trigger > 0.5) {
             hardware.flywheelMotorOne.setPower(1.0);
