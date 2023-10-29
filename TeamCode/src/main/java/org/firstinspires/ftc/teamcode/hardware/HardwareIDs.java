@@ -1,17 +1,22 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 public class HardwareIDs {
+    //drivetrain motors
     public static final String LEFT_FRONT_MOTOR = "leftFront";
     public static final String RIGHT_FRONT_MOTOR = "rightFront";
     public static final String RIGHT_BACK_MOTOR = "rightRear";
     public static final String LEFT_BACK_MOTOR = "leftRear";
+
+    //other motors
     public static final String INTAKE_MOTOR = "intakeMotor";
-    public static final String INTAKE_RAMP_MOTOR = "intakeRampMotor";
-    public static final String FLYWHEEL_1_MOTOR = "flywheel1Motor";
-    public static final String FLYWHEEL_2_MOTOR = "flywheel2Motor";
-    public static final String SCAFFOLD_SERVO_ONE = "scaffoldServoOne";
-    public static final String SCAFFOLD_SERVO_TWO = "scaffoldServoTwo";
+    public static final String LAUNCHER_MOTOR = "launcherMotor";
+    public static final String FLYWHEEL_MOTOR_1 = "flywheelMotor1";
+    public static final String FLYWHEEL_MOTOR_2 = "flywheelMotor2";
+
+    //launcher servo
     public static final String LAUNCHER_SERVO = "launcherServo";
+
+    //arm servos
     public static final String ARM_SERVO_1 = "armServo1";
     public static final String ARM_SERVO_2 = "armServo2";
     public static final String CLAW_SERVO = "clawServo";
