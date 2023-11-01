@@ -52,7 +52,7 @@ public class RavioliTeleOp extends OpMode {
         hardware.launcherMotor.setTargetPosition(INITIAL_POS_SHIFT);
         hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         hardware.launcherMotor.setTargetPositionTolerance(3);
-        hardware.launcherMotor.setPower(0.5);
+        hardware.launcherMotor.setPower(1.0);
         hardware.launcherMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //telemetry updates
@@ -200,7 +200,7 @@ public class RavioliTeleOp extends OpMode {
 
 
         //check for claw grab/release
-        if(gamepad2.square && clawGrabButtonTime.time() >= 500) {
+        if(gamepad2.circle && clawGrabButtonTime.time() >= 500) {
             clawGrab = !clawGrab;
             clawGrabButtonTime.reset();
         }
@@ -230,18 +230,16 @@ public class RavioliTeleOp extends OpMode {
         }
 
         hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.launcherMotor.setPower(0.5);
+        hardware.launcherMotor.setPower(1.0);
 
 
         //check for flywheel spin-up
         if(gamepad2.right_trigger > 0.5) {
             hardware.flywheelMotorOne.setPower(1.0);
-            hardware.flywheelMotorTwo.setPower(1.0);
             telemetry.addData("Flywheels:: ", "Spinning");
         }
         else {
             hardware.flywheelMotorOne.setPower(0.0);
-            hardware.flywheelMotorTwo.setPower(0.0);
             telemetry.addData("Flywheels:: ", "Stopped");
         }
 

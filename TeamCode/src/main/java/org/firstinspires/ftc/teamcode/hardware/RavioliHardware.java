@@ -18,7 +18,6 @@ public class RavioliHardware {
     public DcMotorEx intakeMotor;
     public DcMotorEx launcherMotor;
     public DcMotorEx flywheelMotorOne;
-    public DcMotorEx flywheelMotorTwo;
     public Servo launcherServo;
     public Servo armServoOne;
     public Servo armServoTwo;
@@ -68,17 +67,12 @@ public class RavioliHardware {
 
     private void initializeFlywheels(HardwareMap hardwareMap) {
         //set up launcher motors
-        flywheelMotorOne = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_MOTOR_1);
-        flywheelMotorTwo = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_MOTOR_2);
+        flywheelMotorOne = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_MOTOR);
 
         //set motors to desired settings
         flywheelMotorOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flywheelMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheelMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         flywheelMotorOne.setPower(0.0);
-
-        flywheelMotorTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flywheelMotorTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheelMotorTwo.setPower(0.0);
     }
 
     private void initializeScaffold(HardwareMap hardwareMap) {

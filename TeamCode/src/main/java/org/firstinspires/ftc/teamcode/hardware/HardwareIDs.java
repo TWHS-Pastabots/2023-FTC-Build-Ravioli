@@ -10,8 +10,7 @@ public class HardwareIDs {
     //other motors
     public static final String INTAKE_MOTOR = "intakeMotor";
     public static final String LAUNCHER_MOTOR = "launcherMotor";
-    public static final String FLYWHEEL_MOTOR_1 = "flywheelMotor1";
-    public static final String FLYWHEEL_MOTOR_2 = "flywheelMotor2";
+    public static final String FLYWHEEL_MOTOR = "flywheelMotor";
 
     //launcher servo
     public static final String LAUNCHER_SERVO = "launcherServo";
