@@ -200,7 +200,7 @@ public class RavioliTeleOp extends OpMode {
 
 
         //check for claw grab/release
-        if(gamepad2.circle && clawGrabButtonTime.time() >= 500) {
+        if(gamepad2.cross && clawGrabButtonTime.time() >= 500) {
             clawGrab = !clawGrab;
             clawGrabButtonTime.reset();
         }
