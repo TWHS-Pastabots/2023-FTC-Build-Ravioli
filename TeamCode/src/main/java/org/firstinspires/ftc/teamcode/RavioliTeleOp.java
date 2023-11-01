@@ -182,7 +182,7 @@ public class RavioliTeleOp extends OpMode {
     private void moveArm() {
         //check for controller input for arm
         armServo1Pos += gamepad2.left_stick_y;
-        armServo2Pos -= gamepad2.right_stick_x;
+        armServo2Pos -= gamepad2.left_stick_y;
 
         //ensure arm servo position limits
         if(armServo1Pos > 1.0)
