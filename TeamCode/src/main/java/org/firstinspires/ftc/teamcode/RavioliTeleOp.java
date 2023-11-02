@@ -187,11 +187,11 @@ public class RavioliTeleOp extends OpMode {
         //ensure arm servo position limits
         if(armServo1Pos > 1.0)
             armServo1Pos = 1.0;
-        else if(armServo1Pos < 0.0)
+        if(armServo1Pos < 0.0)
             armServo1Pos = 0.0;
-        else if (armServo2Pos > 1.0)
+        if (armServo2Pos > 1.0)
             armServo2Pos = 1.0;
-        else if (armServo2Pos < 0.0)
+        if (armServo2Pos < 0.0)
             armServo2Pos = 0.0;
 
         //set arm servo positions
