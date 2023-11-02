@@ -14,8 +14,8 @@ public class RavioliTeleOp extends OpMode {
     static final double DRIFT_CONSTANT = 0.8;
     static final double SLOW_SPEED = 0.3;
     static final double FAST_SPEED = 1.0;
-    static final int INITIAL_POS_SHIFT = -80;
-    static final int HIGH_LAUNCH_POS = 60;
+    static final int INITIAL_POS_SHIFT = -40;
+    static final int HIGH_LAUNCH_POS = 20;
     static final int LOW_LAUNCH_POS = 0;
     double speedConstant;
     double armServo1Pos;
@@ -181,8 +181,8 @@ public class RavioliTeleOp extends OpMode {
 
     private void moveArm() {
         //check for controller input for arm
-        armServo1Pos += gamepad2.left_stick_y;
-        armServo2Pos -= gamepad2.left_stick_y;
+        armServo1Pos -= gamepad2.left_stick_y;
+        armServo2Pos += gamepad2.left_stick_y;
 
         //ensure arm servo position limits
         if(armServo1Pos > 1.0)
