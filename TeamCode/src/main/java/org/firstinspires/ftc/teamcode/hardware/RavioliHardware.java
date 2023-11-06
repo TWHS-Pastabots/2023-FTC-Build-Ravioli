@@ -97,8 +97,8 @@ public class RavioliHardware {
         armServoTwo = hardwareMap.get(Servo.class, HardwareIDs.ARM_SERVO_2);
 
         //set arm servos to desired settings
-        armServoOne.setPosition(0.0);
-        armServoTwo.setPosition(1.0);
+        armServoOne.setPosition(1.0);
+        armServoTwo.setPosition(0.0);
 
         //set up claw servo
         clawServo = hardwareMap.get(Servo.class, HardwareIDs.CLAW_SERVO);
