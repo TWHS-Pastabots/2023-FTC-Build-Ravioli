@@ -14,8 +14,8 @@ public class RavioliTeleOp extends OpMode {
     static final double DRIFT_CONSTANT = 0.8;
     static final double SLOW_SPEED = 0.3;
     static final double FAST_SPEED = 1.0;
-    static final int INITIAL_POS_SHIFT = -40;
-    static final int HIGH_LAUNCH_POS = 20;
+    static final int INITIAL_POS_SHIFT = -80;
+    static final int HIGH_LAUNCH_POS = 60;
     static final int LOW_LAUNCH_POS = 0;
     double speedConstant;
     double armServo1Pos;
@@ -28,6 +28,7 @@ public class RavioliTeleOp extends OpMode {
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
     ElapsedTime launchHeightButtonTime = null;
+    ElapsedTime armUpdateButtonTime = null;
 
     @Override
     public void init() {
@@ -42,6 +43,8 @@ public class RavioliTeleOp extends OpMode {
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         clawGrabButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        launchHeightButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        armUpdateButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
@@ -181,8 +184,16 @@ public class RavioliTeleOp extends OpMode {
 
     private void moveArm() {
         //check for controller input for arm
-        armServo1Pos -= gamepad2.left_stick_y;
-        armServo2Pos += gamepad2.left_stick_y;
+        if (gamepad2.dpad_up && armUpdateButtonTime.time() >= 300) {
+            armServo1Pos -= 0.1;
+            armServo2Pos += 0.1;
+            armUpdateButtonTime.reset();
+        }
+        else if (gamepad2.dpad_down && armUpdateButtonTime.time() >= 300) {
+            armServo1Pos += 0.1;
+            armServo2Pos -= 0.1;
+            armUpdateButtonTime.r
+        }
 
         //ensure arm servo position limits
         if(armServo1Pos > 1.0)
