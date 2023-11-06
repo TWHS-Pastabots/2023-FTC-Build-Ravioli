@@ -192,7 +192,7 @@ public class RavioliTeleOp extends OpMode {
         else if (gamepad2.dpad_down && armUpdateButtonTime.time() >= 300) {
             armServo1Pos += 0.1;
             armServo2Pos -= 0.1;
-            armUpdateButtonTime.r
+            armUpdateButtonTime.reset();
         }
 
         //ensure arm servo position limits
