@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
@@ -10,23 +11,24 @@ import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 public class RavioliTeleOp extends OpMode {
 
     RavioliHardware hardware;
+    static final double DRIFT_CONSTANT = 0.8;
     static final double SLOW_SPEED = 0.3;
     static final double FAST_SPEED = 1.0;
-    static final double LOW_LAUNCH_POSITION = 0.0;
-    static final double MIDDLE_LAUNCH_POSITION = 0.5;
-    static final double HIGH_LAUNCH_POSITION = 1.0;
-    static final double ARM_SCORE_POSITION = 1.0;
-    static final double ARM_REST_POSITION = 0.0;
+    static final int INITIAL_POS_SHIFT = -80;
+    static final int HIGH_LAUNCH_POS = 60;
+    static final int LOW_LAUNCH_POS = 0;
     double speedConstant;
+    double armServo1Pos;
+    double armServo2Pos;
+    boolean clawGrab;
     boolean fastMode;
     boolean fineControl;
-    boolean armScoring;
+    boolean highLaunch;
+    ElapsedTime clawGrabButtonTime = null;
     ElapsedTime speedSwapButtonTime = null;
     ElapsedTime fineControlButtonTime = null;
-    ElapsedTime servoPos1ButtonTime = null;
-    ElapsedTime servoPos2ButtonTime = null;
-    ElapsedTime servoPos3ButtonTime = null;
-    ElapsedTime armPosButtonTime = null;
+    ElapsedTime launchHeightButtonTime = null;
+    ElapsedTime armUpdateButtonTime = null;
 
     @Override
     public void init() {
@@ -34,19 +36,29 @@ public class RavioliTeleOp extends OpMode {
         hardware.init(hardwareMap);
         fastMode = true;
         fineControl = false;
-        armScoring = false;
+        clawGrab = false;
+        highLaunch = false;
+        armServo1Pos = hardware.armServoOne.getPosition();
+        armServo2Pos = hardware.armServoTwo.getPosition();
         speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        servoPos1ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        armPosButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        clawGrabButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        launchHeightButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        armUpdateButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
 
     @Override
     public void start() {
+        //move launcher scaffold down
+        hardware.launcherMotor.setTargetPosition(INITIAL_POS_SHIFT);
+        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.launcherMotor.setTargetPositionTolerance(3);
+        hardware.launcherMotor.setPower(1.0);
+        hardware.launcherMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //telemetry updates
         telemetry.addData("Status:: ", "Started");
         telemetry.addData("Current Drive Mode:: ", "Fast");
         telemetry.update();
@@ -151,9 +163,8 @@ public class RavioliTeleOp extends OpMode {
         }
 
         //set drive motor power
-        //test drift fix? pls work
-        hardware.rightFront.setPower(rightFrontPower * 0.8);
-        hardware.rightBack.setPower(rightBackPower * 0.8);
+        hardware.rightFront.setPower(rightFrontPower * DRIFT_CONSTANT);
+        hardware.rightBack.setPower(rightBackPower * DRIFT_CONSTANT);
         hardware.leftFront.setPower(leftFrontPower);
         hardware.leftBack.setPower(leftBackPower);
     }
@@ -162,60 +173,91 @@ public class RavioliTeleOp extends OpMode {
         //check for intake on/off
         if (gamepad2.square) {
             hardware.intakeMotor.setPower(1.0);
-            hardware.intakeRampMotor.setPower(1.0);
             telemetry.addData("Intake Status:: ", "On");
-        } else {
+        }
+        else {
             hardware.intakeMotor.setPower(0.0);
-            hardware.intakeRampMotor.setPower(0.0);
             telemetry.addData("Intake Status:: ", "Off");
         }
 
-        //check for servo position changes
-        if(gamepad2.triangle && servoPos1ButtonTime.time() >= 500) {
-            hardware.flywheelServoOne.setPosition(LOW_LAUNCH_POSITION);
-            hardware.flywheelServoTwo.setPosition(LOW_LAUNCH_POSITION);
-            hardware.launcherServo.setPosition(LOW_LAUNCH_POSITION);
-            servoPos1ButtonTime.reset();
-            telemetry.addData("Launch Position:: ", "LOW");
-        }
-        else if(gamepad2.cross && servoPos2ButtonTime.time() >= 500) {
-            hardware.flywheelServoOne.setPosition(MIDDLE_LAUNCH_POSITION);
-            hardware.flywheelServoTwo.setPosition(MIDDLE_LAUNCH_POSITION);
-            hardware.launcherServo.setPosition(MIDDLE_LAUNCH_POSITION);
-            servoPos2ButtonTime.reset();
-            telemetry.addData("Launch Position:: ", "MIDDLE");
-        }
-        else if(gamepad2.circle && servoPos3ButtonTime.time() >= 500) {
-            hardware.flywheelServoOne.setPosition(HIGH_LAUNCH_POSITION);
-            hardware.flywheelServoTwo.setPosition(HIGH_LAUNCH_POSITION);
-            hardware.launcherServo.setPosition(HIGH_LAUNCH_POSITION);
-            servoPos3ButtonTime.reset();
-            telemetry.addData("Launch Position:: ", "HIGH");
-        }
     }
 
     private void moveArm() {
-        //check for position change
-        if(gamepad2.right_bumper && armPosButtonTime.time() >= 500)
-            armScoring = !armScoring;
+        //check for controller input for arm
+        if (gamepad2.dpad_up && armUpdateButtonTime.time() >= 300) {
+            armServo1Pos -= 0.1;
+            armServo2Pos += 0.1;
+            armUpdateButtonTime.reset();
+        }
+        else if (gamepad2.dpad_down && armUpdateButtonTime.time() >= 300) {
+            armServo1Pos += 0.1;
+            armServo2Pos -= 0.1;
+            armUpdateButtonTime.reset();
+        }
 
-        if(armScoring)
-            hardware.armServoOne.setPosition(ARM_SCORE_POSITION);
+        //ensure arm servo position limits
+        if(armServo1Pos > 1.0)
+            armServo1Pos = 1.0;
+        if(armServo1Pos < 0.0)
+            armServo1Pos = 0.0;
+        if (armServo2Pos > 1.0)
+            armServo2Pos = 1.0;
+        if (armServo2Pos < 0.0)
+            armServo2Pos = 0.0;
+
+        //set arm servo positions
+        hardware.armServoOne.setPosition(armServo1Pos);
+        hardware.armServoTwo.setPosition(armServo2Pos);
+
+
+        //check for claw grab/release
+        if(gamepad2.cross && clawGrabButtonTime.time() >= 500) {
+            clawGrab = !clawGrab;
+            clawGrabButtonTime.reset();
+        }
+
+        //set claw servo position
+        if(clawGrab)
+            hardware.clawServo.setPosition(1.0);
         else
-            hardware.armServoOne.setPosition(ARM_REST_POSITION);
+            hardware.clawServo.setPosition(0.0);
     }
 
     private void launch() {
-        //check for launch
+        //check for scaffold height change
+        if(gamepad2.triangle && launchHeightButtonTime.time() >= 500) {
+            highLaunch = !highLaunch;
+            launchHeightButtonTime.reset();
+        }
+
+        //move scaffold
+        if(highLaunch) {
+            hardware.launcherMotor.setTargetPosition(HIGH_LAUNCH_POS);
+            telemetry.addData("Launcher Pos:: ", "High");
+        }
+        else {
+            hardware.launcherMotor.setTargetPosition(LOW_LAUNCH_POS);
+            telemetry.addData("Launcher Pos:: ", "Low");
+        }
+
+        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.launcherMotor.setPower(1.0);
+
+
+        //check for flywheel spin-up
         if(gamepad2.right_trigger > 0.5) {
             hardware.flywheelMotorOne.setPower(1.0);
-            hardware.flywheelMotorTwo.setPower(1.0);
             telemetry.addData("Flywheels:: ", "Spinning");
         }
         else {
             hardware.flywheelMotorOne.setPower(0.0);
-            hardware.flywheelMotorTwo.setPower(0.0);
             telemetry.addData("Flywheels:: ", "Stopped");
         }
+
+        //set launch servo position
+        if(gamepad2.circle)
+            hardware.launcherServo.setPosition(1.0);
+        else
+            hardware.launcherServo.setPosition(0.0);
     }
 }
