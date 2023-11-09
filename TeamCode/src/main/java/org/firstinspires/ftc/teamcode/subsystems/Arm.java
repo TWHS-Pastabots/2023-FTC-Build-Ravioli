@@ -10,22 +10,22 @@ public class Arm {
     double armServo1Pos;
     double armServo2Pos;
     boolean clawGrab;
-    ElapsedTime armUpdateButtonTime = null;
-    ElapsedTime clawGrabButtonTime = null;
+    ElapsedTime armUpdateTime = null;
+    ElapsedTime clawGrabTime = null;
 
     public Arm(RavioliHardware hardwareInput) {
         hardware = hardwareInput;
         clawGrab = false;
         armServo1Pos = hardware.armServoOne.getPosition();
         armServo2Pos = hardware.armServoTwo.getPosition();
-        clawGrabButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        armUpdateButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        clawGrabTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        armUpdateTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     }
-    public void moveArm (double input) {
-        if (armUpdateButtonTime.time() >= 300) {
+    public void moveArm(double input) {
+        if (armUpdateTime.time() >= 300) {
             armServo1Pos -= input;
             armServo2Pos += input;
-            armUpdateButtonTime.reset();
+            armUpdateTime.reset();
         }
         if(armServo1Pos > 1.0)
             armServo1Pos = 1.0;
@@ -40,12 +40,13 @@ public class Arm {
         hardware.armServoOne.setPosition(armServo1Pos);
         hardware.armServoTwo.setPosition(armServo2Pos);
     }
-    public void moveClaw (boolean grab) {
-        if(grab && clawGrabButtonTime.time() >= 300) {
+    public void swapClawPos () {
+        if(clawGrabTime.time() >= 300) {
             clawGrab = !clawGrab;
-            clawGrabButtonTime.reset();
+            clawGrabTime.reset();
         }
-
+    }
+    public void moveClaw() {
         if(clawGrab)
             hardware.clawServo.setPosition(1.0);
         else

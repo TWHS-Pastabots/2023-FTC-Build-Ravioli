@@ -2,92 +2,61 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
 @TeleOp(name = "Ravioli TeleOp")
 public class RavioliTeleOp extends OpMode {
 
     RavioliHardware hardware;
-    static final double DRIFT_CONSTANT = 0.8;
-    static final double SLOW_SPEED = 0.3;
-    static final double FAST_SPEED = 1.0;
-    static final int INITIAL_POS_SHIFT = -80;
-    static final int HIGH_LAUNCH_POS = 60;
-    static final int LOW_LAUNCH_POS = 0;
-    double speedConstant;
-    double armServo1Pos;
-    double armServo2Pos;
-    boolean clawGrab;
-    boolean fastMode;
-    boolean fineControl;
-    boolean highLaunch;
-    ElapsedTime clawGrabButtonTime = null;
-    ElapsedTime speedSwapButtonTime = null;
-    ElapsedTime fineControlButtonTime = null;
-    ElapsedTime launchHeightButtonTime = null;
-    ElapsedTime armUpdateButtonTime = null;
+    Drivetrain drivetrain;
+    Intake intake;
+    Arm arm;
+    Launcher launcher;
 
     @Override
     public void init() {
         hardware = new RavioliHardware();
         hardware.init(hardwareMap);
-        fastMode = true;
-        fineControl = false;
-        clawGrab = false;
-        highLaunch = false;
-        armServo1Pos = hardware.armServoOne.getPosition();
-        armServo2Pos = hardware.armServoTwo.getPosition();
-        speedSwapButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        fineControlButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        clawGrabButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        launchHeightButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        armUpdateButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+        drivetrain = new Drivetrain(hardware);
+        intake = new Intake(hardware);
+        arm = new Arm(hardware);
+        launcher = new Launcher(hardware);
+
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
 
     @Override
     public void start() {
-        //move launcher scaffold down
-        hardware.launcherMotor.setTargetPosition(INITIAL_POS_SHIFT);
-        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.launcherMotor.setTargetPositionTolerance(3);
-        hardware.launcherMotor.setPower(1.0);
-        hardware.launcherMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //telemetry updates
+        launcher.initialHeightShift();
         telemetry.addData("Status:: ", "Started");
-        telemetry.addData("Current Drive Mode:: ", "Fast");
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Status:: ", "Started");
         drive();
         intake();
-        launch();
         moveArm();
-        telemetry.update();
+        launch();
     }
 
     private void drive() {
         //check for speed swap for normal mode
-        if(gamepad1.square && speedSwapButtonTime.time() >= 200) {
-            fastMode = !fastMode;
-            speedSwapButtonTime.reset();
-        }
+        if(gamepad1.square)
+            drivetrain.swapSpeed();
 
         //check for fine control/normal mode swap
         //fine control raises power to the power of 5to make the increase towards 1.0 be more gradual, increasing precision
         //normal mode multiplies power by a speed constant, which the driver can change
-        if(gamepad1.triangle && fineControlButtonTime.time() >= 200) {
-            fineControl = !fineControl;
-            fineControlButtonTime.reset();
-        }
+        if(gamepad1.triangle)
+            drivetrain.swapFineControl();
 
         //get controller input from joysticks for normal and fine control modes
         double forward, strafe, turn;
@@ -111,29 +80,6 @@ public class RavioliTeleOp extends OpMode {
             rightBackPower /= max;
             leftFrontPower /= max;
             leftBackPower /= max;
-        }
-
-        //adjust power based on mode
-        if(fineControl) {
-            rightFrontPower = Math.pow(rightFrontPower, 7);
-            rightBackPower = Math.pow(rightBackPower, 7);
-            leftFrontPower = Math.pow(leftFrontPower, 7);
-            leftBackPower = Math.pow(leftBackPower, 7);
-            telemetry.addData("Current Drive Mode:: ", "Fine Control");
-        }
-        else {
-            if (fastMode) {
-                speedConstant = FAST_SPEED;
-                telemetry.addData("Current Drive Mode:: ", "Fast");
-            }
-            else {
-                speedConstant = SLOW_SPEED;
-                telemetry.addData("Current Drive Mode:: ", "Slow");
-            }
-            rightFrontPower = rightFrontPower * speedConstant;
-            rightBackPower = rightBackPower * speedConstant;
-            leftFrontPower = leftFrontPower * speedConstant;
-            leftBackPower = leftBackPower * speedConstant;
         }
 
         //check input from dpad, which sets maximum power in one direction, overrides fine control and normal modes
@@ -161,103 +107,30 @@ public class RavioliTeleOp extends OpMode {
             rightFrontPower = 1.0;
             leftBackPower = 1.0;
         }
-
-        //set drive motor power
-        hardware.rightFront.setPower(rightFrontPower * DRIFT_CONSTANT);
-        hardware.rightBack.setPower(rightBackPower * DRIFT_CONSTANT);
-        hardware.leftFront.setPower(leftFrontPower);
-        hardware.leftBack.setPower(leftBackPower);
+        drivetrain.drive(rightFrontPower, leftFrontPower, rightBackPower, leftBackPower);
     }
 
     private void intake() {
-        //check for intake on/off
-        if (gamepad2.square) {
-            hardware.intakeMotor.setPower(1.0);
-            telemetry.addData("Intake Status:: ", "On");
-        }
-        else {
-            hardware.intakeMotor.setPower(0.0);
-            telemetry.addData("Intake Status:: ", "Off");
-        }
-
+        //intake on/off
+        intake.powerIntake(gamepad2.square);
     }
 
     private void moveArm() {
         //check for controller input for arm
-        if (gamepad2.dpad_up && armUpdateButtonTime.time() >= 300) {
-            armServo1Pos -= 0.1;
-            armServo2Pos += 0.1;
-            armUpdateButtonTime.reset();
-        }
-        else if (gamepad2.dpad_down && armUpdateButtonTime.time() >= 300) {
-            armServo1Pos += 0.1;
-            armServo2Pos -= 0.1;
-            armUpdateButtonTime.reset();
-        }
-
-        //ensure arm servo position limits
-        if(armServo1Pos > 1.0)
-            armServo1Pos = 1.0;
-        if(armServo1Pos < 0.0)
-            armServo1Pos = 0.0;
-        if (armServo2Pos > 1.0)
-            armServo2Pos = 1.0;
-        if (armServo2Pos < 0.0)
-            armServo2Pos = 0.0;
-
-        //set arm servo positions
-        hardware.armServoOne.setPosition(armServo1Pos);
-        hardware.armServoTwo.setPosition(armServo2Pos);
-
+        if (gamepad2.dpad_up)
+            arm.moveArm(0.1);
+        else if (gamepad2.dpad_down)
+            arm.moveArm(-0.1);
 
         //check for claw grab/release
-        if(gamepad2.cross && clawGrabButtonTime.time() >= 500) {
-            clawGrab = !clawGrab;
-            clawGrabButtonTime.reset();
-        }
-
-        //set claw servo position
-        if(clawGrab)
-            hardware.clawServo.setPosition(1.0);
-        else
-            hardware.clawServo.setPosition(0.0);
+        if(gamepad2.cross)
+            arm.swapClawPos();
+        arm.moveClaw();
     }
 
     private void launch() {
-        //check for scaffold height change
-        if(gamepad2.triangle && launchHeightButtonTime.time() >= 500) {
-            highLaunch = !highLaunch;
-            launchHeightButtonTime.reset();
-        }
-
-        //move scaffold
-        if(highLaunch) {
-            hardware.launcherMotor.setTargetPosition(HIGH_LAUNCH_POS);
-            telemetry.addData("Launcher Pos:: ", "High");
-        }
-        else {
-            hardware.launcherMotor.setTargetPosition(LOW_LAUNCH_POS);
-            telemetry.addData("Launcher Pos:: ", "Low");
-        }
-
-        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.launcherMotor.setPower(1.0);
-
-
-        //check for flywheel spin-up
-        if(gamepad2.right_trigger > 0.5) {
-            hardware.flywheelMotorOne.setPower(1.0);
-            telemetry.addData("Flywheels:: ", "Spinning");
-        }
-        else {
-            hardware.flywheelMotorOne.setPower(0.0);
-            telemetry.addData("Flywheels:: ", "Stopped");
-        }
-
-        //set launch servo position
-        if(gamepad2.circle)
-            hardware.launcherServo.setPosition(1.0);
-        else
-            hardware.launcherServo.setPosition(0.0);
+        if(gamepad2.triangle)
+            launcher.swapHeight();
+        launcher.launch(gamepad2.right_trigger > 0.5, gamepad2.circle);
     }
 }
