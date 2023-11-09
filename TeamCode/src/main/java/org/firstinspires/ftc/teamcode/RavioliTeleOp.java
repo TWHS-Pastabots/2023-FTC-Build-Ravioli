@@ -118,9 +118,9 @@ public class RavioliTeleOp extends OpMode {
     private void moveArm() {
         //check for controller input for arm
         if (gamepad2.dpad_up)
-            arm.moveArm(0.1);
+            arm.moveArm(0.05);
         else if (gamepad2.dpad_down)
-            arm.moveArm(-0.1);
+            arm.moveArm(-0.05);
 
         //check for claw grab/release
         if(gamepad2.cross)
