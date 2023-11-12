@@ -22,7 +22,7 @@ public class Arm {
         armUpdateTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     }
     public void moveArm(double input) {
-        if (armUpdateTime.time() >= 300) {
+        if (armUpdateTime.time() >= 100) {
             armServo1Pos -= input;
             armServo2Pos += input;
             armUpdateTime.reset();
