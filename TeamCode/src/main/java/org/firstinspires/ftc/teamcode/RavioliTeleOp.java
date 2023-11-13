@@ -34,6 +34,7 @@ public class RavioliTeleOp extends OpMode {
 
     @Override
     public void start() {
+        arm.moveArm(0.3);
         launcher.initialHeightShift();
         telemetry.addData("Status:: ", "Started");
         telemetry.update();

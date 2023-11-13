@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 public class Launcher {
 
     RavioliHardware hardware;
-    static final int INITIAL_POS_SHIFT = -80;
-    static final int HIGH_LAUNCH_POS = 60;
-    static final int LOW_LAUNCH_POS = 0;
+    static final int INITIAL_POS_SHIFT = -10;
+    static final int HIGH_LAUNCH_POS = 5;
+    static final int LOW_LAUNCH_POS = -5;
     boolean highLaunch;
     ElapsedTime launchHeightSwapTime;
 
@@ -51,6 +51,6 @@ public class Launcher {
 
         if(ringPush)
             hardware.launcherServo.setPosition(1.0);
-        hardware.launcherServo.setPosition(0.0);
+        hardware.launcherServo.setPosition(0.8);
     }
 }
