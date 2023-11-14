@@ -34,8 +34,6 @@ public class RavioliTeleOp extends OpMode {
 
     @Override
     public void start() {
-        arm.moveArm(0.3);
-        launcher.initialHeightShift();
         telemetry.addData("Status:: ", "Started");
         telemetry.update();
     }
@@ -130,8 +128,6 @@ public class RavioliTeleOp extends OpMode {
     }
 
     private void launch() {
-        if(gamepad2.triangle)
-            launcher.swapHeight();
         launcher.launch(gamepad2.right_trigger > 0.5, gamepad2.circle);
     }
 }

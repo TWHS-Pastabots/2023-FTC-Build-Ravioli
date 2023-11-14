@@ -76,14 +76,6 @@ public class RavioliHardware {
     }
 
     private void initializeScaffold(HardwareMap hardwareMap) {
-        //set up scaffold motors
-        launcherMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.LAUNCHER_MOTOR);
-
-        //set motor to desired settings
-        launcherMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        launcherMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        launcherMotor.setPower(1.0);
-
         //set up scaffold servos
         launcherServo = hardwareMap.get(Servo.class, HardwareIDs.LAUNCHER_SERVO);
 

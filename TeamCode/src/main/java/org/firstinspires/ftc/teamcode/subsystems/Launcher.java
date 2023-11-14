@@ -8,41 +8,12 @@ import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 public class Launcher {
 
     RavioliHardware hardware;
-    static final int INITIAL_POS_SHIFT = -10;
-    static final int HIGH_LAUNCH_POS = 5;
-    static final int LOW_LAUNCH_POS = -5;
-    boolean highLaunch;
-    ElapsedTime launchHeightSwapTime;
 
     public Launcher (RavioliHardware hardwareInput) {
         hardware = hardwareInput;
-        highLaunch = false;
-        launchHeightSwapTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-    }
-
-    public void initialHeightShift() {
-        hardware.launcherMotor.setTargetPosition(INITIAL_POS_SHIFT);
-        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.launcherMotor.setTargetPositionTolerance(3);
-        hardware.launcherMotor.setPower(1.0);
-        hardware.launcherMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void swapHeight() {
-        if(launchHeightSwapTime.time() >= 300) {
-            highLaunch = !highLaunch;
-            launchHeightSwapTime.reset();
-        }
     }
 
     public void launch(boolean flywheelOn, boolean ringPush) {
-        if(highLaunch)
-            hardware.launcherMotor.setTargetPosition(HIGH_LAUNCH_POS);
-        else
-            hardware.launcherMotor.setTargetPosition(LOW_LAUNCH_POS);
-
-        hardware.launcherMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.launcherMotor.setPower(1.0);
 
         if(flywheelOn)
             hardware.flywheelMotor.setPower(1.0);
@@ -51,6 +22,6 @@ public class Launcher {
 
         if(ringPush)
             hardware.launcherServo.setPosition(1.0);
-        hardware.launcherServo.setPosition(0.8);
+        hardware.launcherServo.setPosition(0.2);
     }
 }
