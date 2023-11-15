@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 
 public class Launcher {
@@ -22,6 +19,7 @@ public class Launcher {
 
         if(ringPush)
             hardware.launcherServo.setPosition(1.0);
-        hardware.launcherServo.setPosition(0.2);
+        else
+            hardware.launcherServo.setPosition(0.2);
     }
 }
