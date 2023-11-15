@@ -22,6 +22,6 @@ public class Launcher {
 
         if(ringPush)
             hardware.launcherServo.setPosition(1.0);
-        hardware.launcherServo.setPosition(0.2);
+        hardware.launcherServo.setPosition(0.9);
     }
 }

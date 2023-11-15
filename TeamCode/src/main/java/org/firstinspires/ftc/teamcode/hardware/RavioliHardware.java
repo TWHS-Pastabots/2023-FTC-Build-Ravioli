@@ -16,7 +16,6 @@ public class RavioliHardware {
     public DcMotorEx leftBack;
     public DcMotorEx[] driveMotors;
     public DcMotorEx intakeMotor;
-    public DcMotorEx launcherMotor;
     public DcMotorEx flywheelMotor;
     public Servo launcherServo;
     public Servo armServoOne;
@@ -80,7 +79,7 @@ public class RavioliHardware {
         launcherServo = hardwareMap.get(Servo.class, HardwareIDs.LAUNCHER_SERVO);
 
         //set servos to desired settings
-        launcherServo.setPosition(0.8);
+        launcherServo.setPosition(0.9);
     }
 
     private void initializeArm(HardwareMap hardwareMap) {
