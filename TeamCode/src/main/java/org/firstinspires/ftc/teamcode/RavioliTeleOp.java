@@ -111,7 +111,7 @@ public class RavioliTeleOp extends OpMode {
 
     private void intake() {
         //intake on/off
-        intake.powerIntake(gamepad2.square);
+        intake.powerIntake(gamepad2.square, gamepad2.triangle);
     }
 
     private void moveArm() {
