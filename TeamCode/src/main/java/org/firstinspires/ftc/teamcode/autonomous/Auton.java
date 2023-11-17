@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import android.annotation.SuppressLint;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -48,6 +49,8 @@ public class Auton extends LinearOpMode {
     int ID3 = 11;
 
     AprilTagDetection tagOfInterest = null;
+
+    Pose2d startPose = new Pose2d(35,60,-90);
 
     @Override
     public void runOpMode() throws InterruptedException {
