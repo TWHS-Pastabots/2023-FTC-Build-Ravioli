@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import android.annotation.SuppressLint;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -19,13 +18,11 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-
-@Autonomous(name = "Ravioli Autonomous")
-public class Auton extends LinearOpMode {
-
+@Autonomous(name = "Red Autonomous")
+public class RedAuton extends LinearOpMode {
 
     SampleMecanumDrive drive;
-
+    RedSequences sequeneces;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -44,17 +41,15 @@ public class Auton extends LinearOpMode {
     double tagsize = 0.166;
 
     // Tag IDs
-    int ID1 = 16;
-    int ID2 = 9;
-    int ID3 = 11;
+    int ID1 = 9;
+    int ID2 = 16;
+    int ID3 = 0;
 
     AprilTagDetection tagOfInterest = null;
 
-    Pose2d startPose = new Pose2d(35,60,-90);
-
     @Override
     public void runOpMode() throws InterruptedException {
-
+        drive = new SampleMecanumDrive(hardwareMap);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -134,10 +129,18 @@ public class Auton extends LinearOpMode {
         }
 
         waitForStart();
-        while(opModeIsActive()) {
 
-        }
+        telemetry.addData("Red Autonomous:: ", tagOfInterest.id);
+        telemetry.update();
 
+        if(tagOfInterest.id == ID1)
+            sequeneces.runRed1();
+        else if (tagOfInterest.id == ID2)
+            sequeneces.runRed2();
+        else if (tagOfInterest.id == ID3)
+            sequeneces.runRed3();
+
+        while(opModeIsActive()) {}
     }
 
     @SuppressLint("DefaultLocale")
