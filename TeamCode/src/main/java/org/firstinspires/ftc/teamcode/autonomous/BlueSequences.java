@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
-public class RedSequences {
+public class BlueSequences {
 
     SampleMecanumDrive drive;
     RavioliHardware hardware;
@@ -42,7 +42,7 @@ public class RedSequences {
     Vector2d parking3 = new Vector2d(-12,-12);
 
 
-    public RedSequences() {
+    public BlueSequences() {
         hardware = new RavioliHardware();
         hardware.init(hardwareMap);
         intake = new Intake(hardware);
@@ -78,7 +78,7 @@ public class RedSequences {
                 .build();
     }
 
-    public void runRed1() {
+    public void runBlue1() {
         drive.setPoseEstimate(startPose);
 
         //pick up ring
@@ -113,7 +113,7 @@ public class RedSequences {
         drive.followTrajectory(park1);
     }
 
-    public void runRed2() {
+    public void runBlue2() {
         drive.setPoseEstimate(startPose);
 
         //pick up ring
@@ -148,7 +148,7 @@ public class RedSequences {
         drive.followTrajectory(park2);
     }
 
-    public void runRed3() {
+    public void runBlue3() {
         drive.setPoseEstimate(startPose);
 
         //pick up ring

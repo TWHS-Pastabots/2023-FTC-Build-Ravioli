@@ -9,7 +9,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -21,8 +20,7 @@ import java.util.ArrayList;
 @Autonomous(name = "Red Autonomous")
 public class RedAuton extends LinearOpMode {
 
-    SampleMecanumDrive drive;
-    RedSequences sequeneces;
+    RedSequeneces sequences;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -38,7 +36,7 @@ public class RedAuton extends LinearOpMode {
     static final double FEET_PER_METER = 3.28084;
 
     // UNITS ARE METERS
-    double tagsize = 0.166;
+    double tagSize = 0.166;
 
     // Tag IDs
     int ID1 = 9;
@@ -49,11 +47,11 @@ public class RedAuton extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        drive = new SampleMecanumDrive(hardwareMap);
+        sequences = new RedSequeneces();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagSize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -134,11 +132,11 @@ public class RedAuton extends LinearOpMode {
         telemetry.update();
 
         if(tagOfInterest.id == ID1)
-            sequeneces.runRed1();
+            sequences.runRed1();
         else if (tagOfInterest.id == ID2)
-            sequeneces.runRed2();
+            sequences.runRed2();
         else if (tagOfInterest.id == ID3)
-            sequeneces.runRed3();
+            sequences.runRed3();
 
         while(opModeIsActive()) {}
     }

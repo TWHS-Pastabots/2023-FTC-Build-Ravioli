@@ -9,7 +9,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -18,12 +17,10 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-
 @Autonomous(name = "Blue Autonomous")
 public class BlueAuton extends LinearOpMode {
 
-    SampleMecanumDrive drive;
-    BlueSequeneces sequeneces;
+    BlueSequences sequences;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -39,7 +36,7 @@ public class BlueAuton extends LinearOpMode {
     static final double FEET_PER_METER = 3.28084;
 
     // UNITS ARE METERS
-    double tagsize = 0.166;
+    double tagSize = 0.166;
 
     // Tag IDs
     int ID1 = 9;
@@ -50,12 +47,11 @@ public class BlueAuton extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-        drive = new SampleMecanumDrive(hardwareMap);
+        sequences = new BlueSequences();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagSize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -136,11 +132,11 @@ public class BlueAuton extends LinearOpMode {
         telemetry.update();
 
         if(tagOfInterest.id == ID1)
-            sequeneces.runBlue1();
+            sequences.runBlue1();
         else if (tagOfInterest.id == ID2)
-            sequeneces.runBlue2();
+            sequences.runBlue2();
         else if (tagOfInterest.id == ID3)
-            sequeneces.runBlue3();
+            sequences.runBlue3();
 
         while(opModeIsActive()) {}
     }
