@@ -8,6 +8,7 @@ public class Drivetrain {
 
     RavioliHardware hardware;
     static final double SLOW_SPEED = 0.3;
+    static final double DRIFT_CONSTANT = 0.7;
     boolean fastMode;
     boolean fineControl;
     ElapsedTime speedSwapTime;
@@ -51,9 +52,9 @@ public class Drivetrain {
             lB *= SLOW_SPEED;
         }
 
-        hardware.rightFront.setPower(rF);
+        hardware.rightFront.setPower(rF * DRIFT_CONSTANT);
         hardware.rightBack.setPower(rB);
-        hardware.leftFront.setPower(lF);
+        hardware.leftFront.setPower(lF * DRIFT_CONSTANT);
         hardware.leftBack.setPower(lB);
     }
 
@@ -63,9 +64,9 @@ public class Drivetrain {
         lF = Math.pow(lF, 7);
         lB = Math.pow(lB, 7);
 
-        hardware.rightFront.setPower(rF);
+        hardware.rightFront.setPower(rF * DRIFT_CONSTANT);
         hardware.rightBack.setPower(rB);
-        hardware.leftFront.setPower(lF);
+        hardware.leftFront.setPower(lF * DRIFT_CONSTANT);
         hardware.leftBack.setPower(lB);
     }
 }
