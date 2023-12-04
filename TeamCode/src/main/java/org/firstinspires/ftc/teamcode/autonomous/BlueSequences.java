@@ -42,14 +42,12 @@ public class BlueSequences {
     Vector2d parking3 = new Vector2d(-12,-12);
 
 
-    public BlueSequences() {
-        hardware = new RavioliHardware();
-        hardware.init(hardwareMap);
+    public BlueSequences(RavioliHardware hardware, SampleMecanumDrive drive) {
+        this.hardware = hardware;
         intake = new Intake(hardware);
         launcher = new Launcher(hardware);
         utilities = new Utilities();
-
-        drive = new SampleMecanumDrive(hardwareMap);
+        this.drive = drive;
 
         toRing = drive.trajectoryBuilder(startPose)
                 .splineTo(initialForward, Math.toRadians(180))
@@ -80,6 +78,7 @@ public class BlueSequences {
 
     public void runBlue1() {
         drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
 
         //pick up ring
         drive.followTrajectory(toRing);
@@ -115,6 +114,7 @@ public class BlueSequences {
 
     public void runBlue2() {
         drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
 
         //pick up ring
         drive.followTrajectory(toRing);
@@ -150,6 +150,7 @@ public class BlueSequences {
 
     public void runBlue3() {
         drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
 
         //pick up ring
         drive.followTrajectory(toRing);

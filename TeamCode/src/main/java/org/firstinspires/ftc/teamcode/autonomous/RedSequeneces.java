@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -21,11 +19,13 @@ public class RedSequeneces {
 
     //Trajectories
     Trajectory toRing;
+    Trajectory strafeStart;
     Trajectory backUpToRing;
-    Trajectory alignShot;
+    Trajectory alignShot1;
+    Trajectory alignShot2;
     Trajectory park1, park2, park3;
 
-    Pose2d startPose = new Pose2d(-60,12,Math.toRadians(180));
+    Pose2d startPose = new Pose2d(-60,12,Math.toRadians(90));
 
     //Pick up ring
     Vector2d initialForward= new Vector2d(-35, 12);
@@ -42,14 +42,12 @@ public class RedSequeneces {
     Vector2d parking3 = new Vector2d(-12,12);
 
 
-    public RedSequeneces() {
-        hardware = new RavioliHardware();
-        hardware.init(hardwareMap);
+    public RedSequeneces(RavioliHardware hardware, SampleMecanumDrive drive) {
+        this.hardware = hardware;
         intake = new Intake(hardware);
         launcher = new Launcher(hardware);
         utilities = new Utilities();
-
-        drive = new SampleMecanumDrive(hardwareMap);
+        this.drive = drive;
 
         toRing = drive.trajectoryBuilder(startPose)
                 .splineTo(initialForward, Math.toRadians(180))
@@ -60,36 +58,46 @@ public class RedSequeneces {
                 .splineTo(intakeRing, Math.toRadians(180))
                 .build();
 
-        alignShot = drive.trajectoryBuilder(backUpToRing.end())
-                .splineTo(centerToShoot, Math.toRadians(180))
-                .splineTo(forwardToShoot, Math.toRadians(170))
+        strafeStart = drive.trajectoryBuilder(startPose)
+                .strafeLeft(4)
+                .build();
+        alignShot1 = drive.trajectoryBuilder(strafeStart.end())
+              /*  .splineTo(centerToShoot, Math.toRadians(90))
+                .splineTo(forwardToShoot, Math.toRadians(80))*/
+                .forward(-120)
                 .build();
 
-        park1 = drive.trajectoryBuilder(alignShot.end())
-                .splineTo(parking1, Math.toRadians(180))
+        alignShot2 = drive.trajectoryBuilder(alignShot1.end())
+                .strafeLeft(12)
                 .build();
 
-        park2 = drive.trajectoryBuilder(alignShot.end())
+        park1 = drive.trajectoryBuilder(alignShot2.end())
+                .splineTo(parking1, Math.toRadians(90))
+                .build();
+
+        park2 = drive.trajectoryBuilder(alignShot1.end())
                 .splineTo(parking2, Math.toRadians(180))
                 .build();
 
-        park3 = drive.trajectoryBuilder(alignShot.end())
+        park3 = drive.trajectoryBuilder(alignShot1.end())
                 .splineTo(parking3, Math.toRadians(180))
                 .build();
     }
 
     public void runRed1() {
         drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
 
         //pick up ring
-        drive.followTrajectory(toRing);
+        /*drive.followTrajectory(toRing);
         intake.powerIntake(true, false);
         drive.followTrajectory(backUpToRing);
         utilities.wait(2000);
-        intake.powerIntake(false, false);
+        intake.powerIntake(false, false);*/
 
         //shoot
-        drive.followTrajectory(alignShot);
+        drive.followTrajectory(alignShot1);
+        drive.followTrajectory(alignShot2);
 
         intake.powerIntake(true, false);
         utilities.wait(1500);
@@ -115,6 +123,7 @@ public class RedSequeneces {
 
     public void runRed2() {
         drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
 
         //pick up ring
         drive.followTrajectory(toRing);
@@ -124,7 +133,7 @@ public class RedSequeneces {
         intake.powerIntake(false, false);
 
         //shoot
-        drive.followTrajectory(alignShot);
+        drive.followTrajectory(alignShot1);
 
         intake.powerIntake(true, false);
         utilities.wait(1500);
@@ -150,6 +159,7 @@ public class RedSequeneces {
 
     public void runRed3() {
         drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
 
         //pick up ring
         drive.followTrajectory(toRing);
@@ -159,7 +169,7 @@ public class RedSequeneces {
         intake.powerIntake(false, false);
 
         //shoot
-        drive.followTrajectory(alignShot);
+        drive.followTrajectory(alignShot1);
 
         intake.powerIntake(true, false);
         utilities.wait(1500);
