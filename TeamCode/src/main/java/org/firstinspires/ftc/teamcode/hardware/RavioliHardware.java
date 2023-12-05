@@ -79,7 +79,7 @@ public class RavioliHardware {
         launcherServo = hardwareMap.get(Servo.class, HardwareIDs.LAUNCHER_SERVO);
 
         //set servos to desired settings
-        launcherServo.setPosition(0.9);
+        launcherServo.setPosition(0.2);
     }
 
     private void initializeArm(HardwareMap hardwareMap) {

@@ -23,7 +23,7 @@ public class RedSequeneces {
     Trajectory backUpToRing;
     Trajectory alignShot1;
     Trajectory alignShot2;
-    Trajectory park1, park2, park3;
+    Trajectory park1, park1b, park2, park3;
 
     Pose2d startPose = new Pose2d(-60,12,Math.toRadians(90));
 
@@ -59,7 +59,7 @@ public class RedSequeneces {
                 .build();
 
         strafeStart = drive.trajectoryBuilder(startPose)
-                .strafeLeft(4)
+                .strafeLeft(1)
                 .build();
         alignShot1 = drive.trajectoryBuilder(strafeStart.end())
               /*  .splineTo(centerToShoot, Math.toRadians(90))
@@ -68,12 +68,18 @@ public class RedSequeneces {
                 .build();
 
         alignShot2 = drive.trajectoryBuilder(alignShot1.end())
-                .strafeLeft(12)
+                .strafeLeft(4)
                 .build();
 
-        park1 = drive.trajectoryBuilder(alignShot2.end())
-                .splineTo(parking1, Math.toRadians(90))
+        park1 = drive.trajectoryBuilder(alignShot1.end())
+                /*.splineTo(parking1, Math.toRadians(90))*/
+                .forward(-20)
                 .build();
+        park1b = drive.trajectoryBuilder(park1.end())
+                .forward(-20)
+                .build();
+
+
 
         park2 = drive.trajectoryBuilder(alignShot1.end())
                 .splineTo(parking2, Math.toRadians(180))
@@ -96,29 +102,38 @@ public class RedSequeneces {
         intake.powerIntake(false, false);*/
 
         //shoot
+        drive.followTrajectory(strafeStart);
+        utilities.wait(2000);
         drive.followTrajectory(alignShot1);
-        drive.followTrajectory(alignShot2);
+        drive.turn(Math.toRadians(-15));
 
-        intake.powerIntake(true, false);
+        //drive.followTrajectory(alignShot2);
+
+        /*intake.powerIntake(true, false);
         utilities.wait(1500);
-        intake.powerIntake(false, false);
+        intake.powerIntake(false, false);*/
         launcher.launch(true, false);
-        utilities.wait(1000);
+        utilities.wait(2000);
         launcher.launch(true, true);
         utilities.wait(1000);
         launcher.launch(false, false);
 
-        intake.powerIntake(true, false);
+
+
+     /*   intake.powerIntake(true, false);
         utilities.wait(1500);
         intake.powerIntake(false, false);
         launcher.launch(true, false);
         utilities.wait(100);
         launcher.launch(true, true);
         utilities.wait(100);
-        launcher.launch(false, false);
+        launcher.launch(false, false);*/
 
         //park
+        drive.turn(Math.toRadians(15));
         drive.followTrajectory(park1);
+        drive.turn(Math.toRadians(90));
+        drive.followTrajectory(park1b);
     }
 
     public void runRed2() {
