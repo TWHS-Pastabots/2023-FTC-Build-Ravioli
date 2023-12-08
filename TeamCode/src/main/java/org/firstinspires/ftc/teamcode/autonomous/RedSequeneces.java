@@ -18,7 +18,7 @@ public class RedSequeneces {
     Utilities utilities;
 
     //Trajectories
-    Trajectory align;
+    Trajectory align, align2;
     Trajectory strafeStart;
     Trajectory backUpToRing;
     Trajectory alignShot1;
@@ -49,18 +49,24 @@ public class RedSequeneces {
         utilities = new Utilities();
         this.drive = drive;
 
-        align = drive.trajectoryBuilder(startPose)
-                .splineTo(initialForward, Math.toRadians(180))
-                //.splineTo(alignToRing, Math.toRadians(180))
+        strafeStart = drive.trajectoryBuilder(startPose)
+                .strafeLeft(20)
                 .build();
 
+        align = drive.trajectoryBuilder(strafeStart.end())
+                //.splineTo(initialForward, Math.toRadians(0))
+                //.splineTo(alignToRing, Math.toRadians(180))
+                .forward(-150)
+                .build();
+
+        align2 = drive.trajectoryBuilder(align.end())
+                .strafeLeft(18)
+                .build();
         /*backUpToRing = drive.trajectoryBuilder(toRing.end())
                 .splineTo(intakeRing, Math.toRadians(180))
                 .build();*/
 
-        strafeStart = drive.trajectoryBuilder(startPose)
-                .strafeLeft(1)
-                .build();
+
         /*alignShot1 = drive.trajectoryBuilder(strafeStart.end())
               *//*  .splineTo(centerToShoot, Math.toRadians(90))
                 .splineTo(forwardToShoot, Math.toRadians(80))*//*
@@ -71,12 +77,13 @@ public class RedSequeneces {
                 .strafeLeft(4)
                 .build();*/
 
-        park1 = drive.trajectoryBuilder(align.end())
-                .splineTo(parking1, Math.toRadians(180))
+        park1 = drive.trajectoryBuilder(align2.end())
+                /*.splineTo(parking1, Math.toRadians(180))
                 /*.forward(-20)*/
+                .strafeRight(25)
                 .build();
         park1b = drive.trajectoryBuilder(park1.end())
-                .forward(-20)
+                .forward(-60)
                 .build();
 
 
@@ -93,6 +100,7 @@ public class RedSequeneces {
     public void runRed1() {
         drive.setPoseEstimate(startPose);
         launcher.launch(false, false);
+        drive.followTrajectory(strafeStart);
 
         //pick up ring
         /*drive.followTrajectory(toRing);
@@ -102,10 +110,12 @@ public class RedSequeneces {
         intake.powerIntake(false, false);*/
 
         //shoot
-        drive.followTrajectory(strafeStart);
+        /*drive.followTrajectory(strafeStart);
         utilities.wait(2000);
-        drive.followTrajectory(alignShot1);
-        drive.turn(Math.toRadians(-15));
+        drive.followTrajectory(alignShot1);*/
+        drive.followTrajectory(align);
+        drive.followTrajectory(align2);
+        //drive.turn(Math.toRadians(-15));
 
         //drive.followTrajectory(alignShot2);
 
@@ -130,10 +140,12 @@ public class RedSequeneces {
         launcher.launch(false, false);*/
 
         //park
-        drive.turn(Math.toRadians(15));
+        //drive.turn(Math.toRadians(15));
         drive.followTrajectory(park1);
-        drive.turn(Math.toRadians(90));
+        utilities.wait(500);
         drive.followTrajectory(park1b);
+        //drive.turn(Math.toRadians(90));
+        //drive.followTrajectory(park1b);
     }
 
     public void runRed2() {
