@@ -25,10 +25,10 @@ public class RedSequeneces {
     Trajectory alignShot2;
     Trajectory park1, park1b, park2, park3;
 
-    Pose2d startPose = new Pose2d(-60,12,Math.toRadians(180));
+    Pose2d startPose = new Pose2d(-16,-62,Math.toRadians(180));
 
     //Pick up ring
-    Vector2d initialForward= new Vector2d(-80, 0);
+    Vector2d initialForward= new Vector2d(-16, 16);
     /*Vector2d alignToRing = new Vector2d(-25, 48);
     Vector2d intakeRing = new Vector2d(-40, 48);*/
 
@@ -37,9 +37,9 @@ public class RedSequeneces {
     Vector2d forwardToShoot = new Vector2d(12,12);*/
 
     //Parking position
-    Vector2d parking1 = new Vector2d(12,-12);
-    Vector2d parking2 = new Vector2d(-24, 0);
-    Vector2d parking3 = new Vector2d(-12,-12);
+    Vector2d parking1 = new Vector2d(-16,36);
+    Vector2d parking2 = new Vector2d(-36, 16);
+    Vector2d parking3 = new Vector2d(-16,-16);
 
 
     public RedSequeneces(RavioliHardware hardware, SampleMecanumDrive drive) {
