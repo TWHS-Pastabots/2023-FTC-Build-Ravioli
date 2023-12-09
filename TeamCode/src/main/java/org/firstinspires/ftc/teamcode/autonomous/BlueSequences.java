@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -18,15 +17,14 @@ public class BlueSequences {
     Utilities utilities;
 
     //Trajectories
-    Trajectory align;
-    Trajectory backUpToRing;
-    Trajectory alignShot;
-    Trajectory park1, park2, park3;
+    Trajectory strafeStart, initialForward;
+    Trajectory align1A, align1B, align2, align3;
+    Trajectory park1A, park1B, park2A, park2B, park3A, park3B;
 
     Pose2d startPose = new Pose2d(16,-62,Math.toRadians(180));
 
     //Pick up ring
-    Vector2d initialForward= new Vector2d(16, 16);
+    //Vector2d initialForward= new Vector2d(16, 16);
     /*Vector2d alignToRing = new Vector2d(-25, -48);
     Vector2d intakeRing = new Vector2d(-40, -48);*/
 
@@ -35,9 +33,9 @@ public class BlueSequences {
     Vector2d forwardToShoot = new Vector2d(12,-12);*/
 
     //Parking position
-    Vector2d parking1 = new Vector2d(16,36);
+    /*Vector2d parking1 = new Vector2d(16,36);
     Vector2d parking2 = new Vector2d(36, 16);
-    Vector2d parking3 = new Vector2d(16,-16);
+    Vector2d parking3 = new Vector2d(16,-16);*/
 
 
     public BlueSequences(RavioliHardware hardware, SampleMecanumDrive drive) {
@@ -47,30 +45,52 @@ public class BlueSequences {
         utilities = new Utilities();
         this.drive = drive;
 
-        align = drive.trajectoryBuilder(startPose)
-                .splineTo(initialForward, Math.toRadians(180))
-                //.splineTo(alignToRing, Math.toRadians(180))
+        strafeStart = drive.trajectoryBuilder(startPose)
+                .strafeRight(20)
                 .build();
 
-        /*backUpToRing = drive.trajectoryBuilder(align.end())
-                .splineTo(intakeRing, Math.toRadians(180))
-                .build();*/
-
-        /*alignShot = drive.trajectoryBuilder(backUpToRing.end())
-                .splineTo(centerToShoot, Math.toRadians(180))
-                .splineTo(forwardToShoot, Math.toRadians(190))
-                .build();*/
-
-        park1 = drive.trajectoryBuilder(align.end(), Math.toRadians(180))
-                .splineTo(parking1, Math.toRadians(180))
+        initialForward = drive.trajectoryBuilder(strafeStart.end())
+                .forward(-120)
                 .build();
 
-        park2 = drive.trajectoryBuilder(align.end(), Math.toRadians(-15))
-                .splineTo(parking2, Math.toRadians(180))
+        align1A = drive.trajectoryBuilder(strafeStart.end())
+                .forward(-30)
                 .build();
 
-        park3 = drive.trajectoryBuilder(align.end(), Math.toRadians(-45))
-                .splineTo(parking3, Math.toRadians(180))
+        align1B = drive.trajectoryBuilder(align1A.end())
+                .strafeRight(18)
+                .build();
+
+        align2 = drive.trajectoryBuilder(strafeStart.end())
+                .forward(-50)
+                .build();
+
+        align3 = drive.trajectoryBuilder(initialForward.end())
+                .strafeRight(18)
+                .build();
+
+        park1A = drive.trajectoryBuilder(align1B.end())
+                .strafeLeft(27)
+                .build();
+
+        park1B = drive.trajectoryBuilder(park1A.end())
+                .forward(-60)
+                .build();
+
+        park2A = drive.trajectoryBuilder(align2.end())
+                .strafeLeft(54)
+                .build();
+
+        park2B = drive.trajectoryBuilder(park2B.end())
+                .forward(40)
+                .build();
+
+        park3A = drive.trajectoryBuilder(align3.end())
+                .forward(40)
+                .build();
+
+        park3B = drive.trajectoryBuilder(park3B.end())
+                .strafeLeft(20)
                 .build();
     }
 
@@ -78,109 +98,61 @@ public class BlueSequences {
         drive.setPoseEstimate(startPose);
         launcher.launch(false, false);
 
-        //pick up ring
-        /*drive.followTrajectory(align);
-        intake.powerIntake(true, false);
-        drive.followTrajectory(backUpToRing);
-        utilities.wait(2000);
-        intake.powerIntake(false, false);*/
+        drive.followTrajectory(strafeStart);
+        drive.followTrajectory(initialForward);
+        drive.followTrajectory(align1A);
+        drive.followTrajectory(align1B);
 
-        //shoot
-        drive.followTrajectory(align);
-
-       /* intake.powerIntake(true, false);
-        utilities.wait(1500);
-        intake.powerIntake(false, false);*/
-        launcher.launch(true, false);
-        utilities.wait(1000);
-        launcher.launch(true, true);
-        utilities.wait(1000);
-        launcher.launch(false, false);
-
-        /*intake.powerIntake(true, false);
-        utilities.wait(1500);
-        intake.powerIntake(false, false);
-        launcher.launch(true, false);
-        utilities.wait(100);
-        launcher.launch(true, true);
-        utilities.wait(100);
-        launcher.launch(false, false);*/
-
-        //park
-        drive.followTrajectory(park1);
-    }
-
-    public void runBlue2() {
-        drive.setPoseEstimate(startPose);
-        launcher.launch(false, false);
-
-        //pick up ring
-        /*drive.followTrajectory(align);
-        intake.powerIntake(true, false);
-        drive.followTrajectory(backUpToRing);
-        utilities.wait(2000);
-        intake.powerIntake(false, false);*/
-
-        //shoot
-        drive.followTrajectory(align);
-
-        /*intake.powerIntake(true, false);
-        utilities.wait(1500);
-        intake.powerIntake(false, false);*/
-        drive.turn(Math.toRadians(-15));
-        launcher.launch(true, false);
-        utilities.wait(1000);
-        launcher.launch(true, true);
-        utilities.wait(1000);
-        launcher.launch(false, false);
-
-        /*intake.powerIntake(true, false);
-        utilities.wait(1500);
-        intake.powerIntake(false, false);
-        launcher.launch(true, false);
-        utilities.wait(100);
-        launcher.launch(true, true);
-        utilities.wait(100);
-        launcher.launch(false, false);*/
-
-        //park
-        drive.followTrajectory(park2);
-    }
-
-    public void runBlue3() {
-        drive.setPoseEstimate(startPose);
-        launcher.launch(false, false);
-
-        //pick up ring
-       /* drive.followTrajectory(align);
-        intake.powerIntake(true, false);
-        drive.followTrajectory(backUpToRing);
-        utilities.wait(2000);
-        intake.powerIntake(false, false);*/
-
-        //shoot
-        drive.followTrajectory(align);
-
-        /*intake.powerIntake(true, false);
-        utilities.wait(1500);
-        intake.powerIntake(false, false);*/
         drive.turn(Math.toRadians(-45));
         launcher.launch(true, false);
         utilities.wait(1000);
         launcher.launch(true, true);
         utilities.wait(1000);
         launcher.launch(false, false);
+        drive.turn(Math.toRadians(45));
 
-        /*intake.powerIntake(true, false);
-        utilities.wait(1500);
-        intake.powerIntake(false, false);
+        drive.followTrajectory(park1A);
+        utilities.wait(200);
+        drive.followTrajectory(park1B);
+    }
+
+    public void runBlue2() {
+        drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
+
+        drive.followTrajectory(strafeStart);
+        drive.followTrajectory(initialForward);
+        drive.followTrajectory(align2);
+
+        drive.turn(Math.toRadians(-20));
         launcher.launch(true, false);
-        utilities.wait(100);
+        utilities.wait(1000);
         launcher.launch(true, true);
-        utilities.wait(100);
-        launcher.launch(false, false);*/
+        utilities.wait(1000);
+        launcher.launch(false, false);
+        drive.turn(Math.toRadians(20));
 
-        //park
-        drive.followTrajectory(park3);
+        drive.followTrajectory(park2A);
+        utilities.wait(200);
+        drive.followTrajectory(park2B);
+    }
+
+    public void runBlue3() {
+        drive.setPoseEstimate(startPose);
+        launcher.launch(false, false);
+
+        drive.followTrajectory(strafeStart);
+        drive.followTrajectory(initialForward);
+        drive.followTrajectory(align3);
+
+        launcher.launch(true, false);
+        utilities.wait(1000);
+        launcher.launch(true, true);
+        utilities.wait(1000);
+        launcher.launch(false, false);
+
+        drive.followTrajectory(park3A);
+        utilities.wait(200);
+        drive.followTrajectory(park3B);
     }
 }
