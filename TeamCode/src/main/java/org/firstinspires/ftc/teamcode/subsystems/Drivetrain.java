@@ -52,10 +52,10 @@ public class Drivetrain {
             lB *= SLOW_SPEED;
         }
 
-        hardware.rightFront.setPower(rF * DRIFT_CONSTANT);
-        hardware.rightBack.setPower(rB);
-        hardware.leftFront.setPower(lF * DRIFT_CONSTANT);
-        hardware.leftBack.setPower(lB);
+        hardware.rightFront.setPower(rF);
+        hardware.rightBack.setPower(rB  * DRIFT_CONSTANT);
+        hardware.leftFront.setPower(lF);
+        hardware.leftBack.setPower(lB * DRIFT_CONSTANT);
     }
 
     private void fineControlDrive(double rF, double lF, double rB, double lB) {
@@ -64,9 +64,9 @@ public class Drivetrain {
         lF = Math.pow(lF, 7);
         lB = Math.pow(lB, 7);
 
-        hardware.rightFront.setPower(rF * DRIFT_CONSTANT);
-        hardware.rightBack.setPower(rB);
-        hardware.leftFront.setPower(lF * DRIFT_CONSTANT);
-        hardware.leftBack.setPower(lB);
+        hardware.rightFront.setPower(rF);
+        hardware.rightBack.setPower(rB  * DRIFT_CONSTANT);
+        hardware.leftFront.setPower(lF);
+        hardware.leftBack.setPower(lB * DRIFT_CONSTANT);
     }
 }
