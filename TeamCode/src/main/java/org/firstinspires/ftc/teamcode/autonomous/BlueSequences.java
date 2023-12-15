@@ -50,10 +50,10 @@ public class BlueSequences {
                 .build();
 
         initialForward = drive.trajectoryBuilder(strafeStart.end())
-                .forward(-120)
+                .forward(-115)
                 .build();
 
-        align1A = drive.trajectoryBuilder(strafeStart.end())
+        align1A = drive.trajectoryBuilder(initialForward.end())
                 .forward(-30)
                 .build();
 
@@ -61,36 +61,36 @@ public class BlueSequences {
                 .strafeRight(18)
                 .build();
 
-        align2 = drive.trajectoryBuilder(strafeStart.end())
-                .forward(-50)
+        align2 = drive.trajectoryBuilder(initialForward.end())
+                .forward(-40)
                 .build();
 
         align3 = drive.trajectoryBuilder(initialForward.end())
-                .strafeRight(18)
+                .strafeRight(15)
                 .build();
 
         park1A = drive.trajectoryBuilder(align1B.end())
-                .strafeLeft(27)
+                .strafeLeft(39)
                 .build();
 
         park1B = drive.trajectoryBuilder(park1A.end())
-                .forward(-60)
+                .forward(-68)
                 .build();
 
         park2A = drive.trajectoryBuilder(align2.end())
-                .strafeLeft(54)
+                .strafeLeft(80)
                 .build();
 
-        park2B = drive.trajectoryBuilder(park2B.end())
-                .forward(40)
+        park2B = drive.trajectoryBuilder(park2A.end())
+                .forward(-10)
                 .build();
 
         park3A = drive.trajectoryBuilder(align3.end())
-                .forward(40)
+                .forward(14)
                 .build();
 
-        park3B = drive.trajectoryBuilder(park3B.end())
-                .strafeLeft(20)
+        park3B = drive.trajectoryBuilder(park3A.end())
+                .strafeLeft(30.5)
                 .build();
     }
 
@@ -103,13 +103,13 @@ public class BlueSequences {
         drive.followTrajectory(align1A);
         drive.followTrajectory(align1B);
 
-        drive.turn(Math.toRadians(-45));
+        drive.turn(Math.toRadians(35));
         launcher.launch(true, false);
         utilities.wait(1000);
         launcher.launch(true, true);
         utilities.wait(1000);
         launcher.launch(false, false);
-        drive.turn(Math.toRadians(45));
+        drive.turn(Math.toRadians(-35));
 
         drive.followTrajectory(park1A);
         utilities.wait(200);
@@ -124,13 +124,13 @@ public class BlueSequences {
         drive.followTrajectory(initialForward);
         drive.followTrajectory(align2);
 
-        drive.turn(Math.toRadians(-20));
+        drive.turn(Math.toRadians(22.5));
         launcher.launch(true, false);
         utilities.wait(1000);
         launcher.launch(true, true);
         utilities.wait(1000);
         launcher.launch(false, false);
-        drive.turn(Math.toRadians(20));
+        drive.turn(Math.toRadians(-22.5));
 
         drive.followTrajectory(park2A);
         utilities.wait(200);
@@ -146,7 +146,7 @@ public class BlueSequences {
         drive.followTrajectory(align3);
 
         launcher.launch(true, false);
-        utilities.wait(1000);
+        utilities.wait(1500);
         launcher.launch(true, true);
         utilities.wait(1000);
         launcher.launch(false, false);

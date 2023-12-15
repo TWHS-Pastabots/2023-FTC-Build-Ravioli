@@ -70,7 +70,7 @@ public class RavioliHardware {
 
         //set motors to desired settings
         flywheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheelMotor.setPower(0.0);
     }
 

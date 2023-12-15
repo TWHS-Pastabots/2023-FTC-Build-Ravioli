@@ -65,8 +65,8 @@ public class RedSequeneces {
                 .strafeLeft(18)
                 .build();
 
-        align3B = drive.trajectoryBuilder(align3B.end())
-                .forward(30)
+        align3B = drive.trajectoryBuilder(align3A.end())
+                .forward(20)
                 .build();
 
         park1A = drive.trajectoryBuilder(align1.end())
@@ -78,19 +78,19 @@ public class RedSequeneces {
                 .build();
 
         park2A = drive.trajectoryBuilder(align2.end())
-                .forward(40)
+                .forward(35)
                 .build();
 
         park2B = drive.trajectoryBuilder(park2A.end())
-                .strafeRight(54)
+                .strafeRight(66)
                 .build();
 
         park3A = drive.trajectoryBuilder(align3B.end())
-                .forward(70)
+                .forward(25)
                 .build();
 
         park3B = drive.trajectoryBuilder(park3A.end())
-                .strafeRight(18)
+                .strafeRight(25)
                 .build();
     }
 
@@ -120,7 +120,7 @@ public class RedSequeneces {
         drive.followTrajectory(strafeStart);
         drive.followTrajectory(initialForward);
         drive.followTrajectory(align2);
-        drive.turn(Math.toRadians(-20));
+        drive.turn(Math.toRadians(-39));
 
         launcher.launch(true, false);
         utilities.wait(1000);
@@ -128,7 +128,7 @@ public class RedSequeneces {
         utilities.wait(1000);
         launcher.launch(false, false);
 
-        drive.turn(Math.toRadians(20));
+        drive.turn(Math.toRadians(39));
         utilities.wait(200);
         drive.followTrajectory(park2A);
         utilities.wait(200);
@@ -144,14 +144,14 @@ public class RedSequeneces {
         drive.followTrajectory(align3A);
         drive.followTrajectory(align3B);
 
-        drive.turn(Math.toRadians(-45));
+        drive.turn(Math.toRadians(-36.5));
         launcher.launch(true, false);
-        utilities.wait(1000);
+        utilities.wait(1500);
         launcher.launch(true, true);
         utilities.wait(1000);
         launcher.launch(false, false);
 
-        drive.turn(Math.toRadians(45));
+        drive.turn(Math.toRadians(36.5));
         utilities.wait(200);
         drive.followTrajectory(park3A);
         utilities.wait(200);

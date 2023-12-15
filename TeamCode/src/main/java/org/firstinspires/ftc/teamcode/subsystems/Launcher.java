@@ -16,7 +16,7 @@ public class Launcher {
     public void launch(boolean flywheelOn, boolean ringPush) {
 
         if(flywheelOn)
-            hardware.flywheelMotor.setPower(0.85);
+            hardware.flywheelMotor.setPower(0.9);
         else
             hardware.flywheelMotor.setPower(0.0);
 
