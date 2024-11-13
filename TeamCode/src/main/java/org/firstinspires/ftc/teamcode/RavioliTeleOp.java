@@ -2,14 +2,22 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+<<<<<<< HEAD
 import com.qualcomm.robotcore.util.ElapsedTime;
+=======
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
 
 import org.firstinspires.ftc.teamcode.hardware.RavioliHardware;
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
 @TeleOp(name = "Ravioli TeleOp")
 public class RavioliTeleOp extends OpMode {
 
     RavioliHardware hardware;
+<<<<<<< HEAD
     static final double SLOW_SPEED = 0.3;
     static final double FAST_SPEED = 1.0;
     static final double LOW_LAUNCH_POSITION = 0.0;
@@ -27,11 +35,18 @@ public class RavioliTeleOp extends OpMode {
     ElapsedTime servoPos2ButtonTime = null;
     ElapsedTime servoPos3ButtonTime = null;
     ElapsedTime armPosButtonTime = null;
+=======
+    Drivetrain drivetrain;
+    Intake intake;
+    Arm arm;
+    Launcher launcher;
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
 
     @Override
     public void init() {
         hardware = new RavioliHardware();
         hardware.init(hardwareMap);
+<<<<<<< HEAD
         fastMode = true;
         fineControl = false;
         armScoring = false;
@@ -41,6 +56,14 @@ public class RavioliTeleOp extends OpMode {
         servoPos2ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         servoPos3ButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         armPosButtonTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+=======
+
+        drivetrain = new Drivetrain(hardware);
+        intake = new Intake(hardware);
+        arm = new Arm(hardware);
+        launcher = new Launcher(hardware);
+
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
         telemetry.addData("Status:: ", "Initialized");
         telemetry.update();
     }
@@ -48,34 +71,27 @@ public class RavioliTeleOp extends OpMode {
     @Override
     public void start() {
         telemetry.addData("Status:: ", "Started");
-        telemetry.addData("Current Drive Mode:: ", "Fast");
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Status:: ", "Started");
         drive();
         intake();
-        launch();
         moveArm();
-        telemetry.update();
+        launch();
     }
 
     private void drive() {
         //check for speed swap for normal mode
-        if(gamepad1.square && speedSwapButtonTime.time() >= 200) {
-            fastMode = !fastMode;
-            speedSwapButtonTime.reset();
-        }
+        if(gamepad1.square)
+            drivetrain.swapSpeed();
 
         //check for fine control/normal mode swap
         //fine control raises power to the power of 5to make the increase towards 1.0 be more gradual, increasing precision
         //normal mode multiplies power by a speed constant, which the driver can change
-        if(gamepad1.triangle && fineControlButtonTime.time() >= 200) {
-            fineControl = !fineControl;
-            fineControlButtonTime.reset();
-        }
+        if(gamepad1.triangle)
+            drivetrain.swapFineControl();
 
         //get controller input from joysticks for normal and fine control modes
         double forward, strafe, turn;
@@ -99,29 +115,6 @@ public class RavioliTeleOp extends OpMode {
             rightBackPower /= max;
             leftFrontPower /= max;
             leftBackPower /= max;
-        }
-
-        //adjust power based on mode
-        if(fineControl) {
-            rightFrontPower = Math.pow(rightFrontPower, 7);
-            rightBackPower = Math.pow(rightBackPower, 7);
-            leftFrontPower = Math.pow(leftFrontPower, 7);
-            leftBackPower = Math.pow(leftBackPower, 7);
-            telemetry.addData("Current Drive Mode:: ", "Fine Control");
-        }
-        else {
-            if (fastMode) {
-                speedConstant = FAST_SPEED;
-                telemetry.addData("Current Drive Mode:: ", "Fast");
-            }
-            else {
-                speedConstant = SLOW_SPEED;
-                telemetry.addData("Current Drive Mode:: ", "Slow");
-            }
-            rightFrontPower = rightFrontPower * speedConstant;
-            rightBackPower = rightBackPower * speedConstant;
-            leftFrontPower = leftFrontPower * speedConstant;
-            leftBackPower = leftBackPower * speedConstant;
         }
 
         //check input from dpad, which sets maximum power in one direction, overrides fine control and normal modes
@@ -149,6 +142,7 @@ public class RavioliTeleOp extends OpMode {
             rightFrontPower = 1.0;
             leftBackPower = 1.0;
         }
+<<<<<<< HEAD
 
         //set drive motor power
         //test drift fix? pls work
@@ -217,5 +211,30 @@ public class RavioliTeleOp extends OpMode {
             hardware.flywheelMotorTwo.setPower(0.0);
             telemetry.addData("Flywheels:: ", "Stopped");
         }
+=======
+        drivetrain.drive(rightFrontPower, leftFrontPower, rightBackPower, leftBackPower);
+    }
+
+    private void intake() {
+        //intake on/off
+        intake.powerIntake(gamepad2.square, gamepad2.triangle);
+    }
+
+    private void moveArm() {
+        //check for controller input for arm
+        if (gamepad2.dpad_up)
+            arm.moveArm(0.05);
+        else if (gamepad2.dpad_down)
+            arm.moveArm(-0.05);
+
+        //check for claw grab/release
+        if(gamepad2.cross)
+            arm.swapClawPos();
+        arm.moveClaw();
+    }
+
+    private void launch() {
+        launcher.launch(gamepad2.right_trigger > 0.5, gamepad2.circle);
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
     }
 }

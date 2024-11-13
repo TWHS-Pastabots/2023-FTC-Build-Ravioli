@@ -16,11 +16,15 @@ public class RavioliHardware {
     public DcMotorEx leftBack;
     public DcMotorEx[] driveMotors;
     public DcMotorEx intakeMotor;
+<<<<<<< HEAD
     public DcMotorEx intakeRampMotor;
     public DcMotorEx flywheelMotorOne;
     public DcMotorEx flywheelMotorTwo;
     public Servo flywheelServoOne;
     public Servo flywheelServoTwo;
+=======
+    public DcMotorEx flywheelMotor;
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
     public Servo launcherServo;
     public Servo armServoOne;
     //public Servo armServoTwo;
@@ -61,6 +65,7 @@ public class RavioliHardware {
     private void initializeIntakeMotors(HardwareMap hardwareMap) {
         //set up intake motors
         intakeMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.INTAKE_MOTOR);
+<<<<<<< HEAD
         intakeRampMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.INTAKE_RAMP_MOTOR);
 
         //set motors to desired settings
@@ -89,15 +94,39 @@ public class RavioliHardware {
     }
 
     private void initializeScaffoldServos(HardwareMap hardwareMap) {
+=======
+
+        //set motor to desired settings
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setPower(0.0);
+    }
+
+    private void initializeFlywheels(HardwareMap hardwareMap) {
+        //set up launcher motors
+        flywheelMotor = hardwareMap.get(DcMotorEx.class, HardwareIDs.FLYWHEEL_MOTOR);
+
+        //set motors to desired settings
+        flywheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheelMotor.setPower(0.0);
+    }
+
+    private void initializeScaffold(HardwareMap hardwareMap) {
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
         //set up scaffold servos
         flywheelServoOne = hardwareMap.get(Servo.class, HardwareIDs.SCAFFOLD_SERVO_ONE);
         flywheelServoTwo = hardwareMap.get(Servo.class, HardwareIDs.SCAFFOLD_SERVO_TWO);
         launcherServo = hardwareMap.get(Servo.class, HardwareIDs.LAUNCHER_SERVO);
 
         //set servos to desired settings
+<<<<<<< HEAD
         flywheelServoOne.setPosition(0.0);
         flywheelServoTwo.setPosition(0.0);
         launcherServo.setPosition(0.0);
+=======
+        launcherServo.setPosition(0.2);
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
     }
 
     private void initializeArmMotors(HardwareMap hardwareMap) {
@@ -106,8 +135,13 @@ public class RavioliHardware {
         //armServoTwo = hardwareMap.get(Servo.class, HardwareIDs.ARM_SERVO_2);
 
         //set arm servos to desired settings
+<<<<<<< HEAD
         armServoOne.setPosition(0.0);
         //armServoTwo.setPosition(0.0);
+=======
+        armServoOne.setPosition(1.0);
+        armServoTwo.setPosition(0.0);
+>>>>>>> 1a006d6696d306b466415a8bafe556a0343cace6
 
         //set up claw servo
         clawServo = hardwareMap.get(Servo.class, HardwareIDs.CLAW_SERVO);
